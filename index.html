@@ -24,7 +24,8 @@
 
   <link rel="preload" href="assets/fonts/tektur-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/plex-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- ?v= — номер версии: при каждом обновлении стилей или скриптов его меняют, чтобы браузеры сразу взяли новые файлы -->
+  <link rel="stylesheet" href="assets/css/style.css?v=4">
 
   <script type="application/ld+json">
   {
@@ -45,7 +46,7 @@
     },
     "geo": { "@type": "GeoCoordinates", "latitude": 47.415218, "longitude": 40.097318 },
     "openingHours": "Mo-Su 12:00-01:00",
-    "sameAs": ["https://vk.com/bunkerpub_nvch", "https://yandex.ru/maps/org/bunkerpab/225734405698/"]
+    "sameAs": ["https://vk.com/bunkerpub_nvch", "https://t.me/bunkerpub", "https://yandex.ru/maps/org/bunkerpab/225734405698/"]
   }
   </script>
 </head>
@@ -128,6 +129,18 @@
           <p class="lead" data-site="broadcast.text">Показываем спортивные матчи и игры в прямом эфире. В дни больших игр столы напротив экрана занимают заранее, поэтому бронируйте.</p>
           <ul class="leagues" id="leagues" hidden></ul>
           <button class="btn btn--red btn--big" type="button" data-book>Забронировать стол на матч</button>
+
+          <div class="socials">
+            <p class="socials__label">Новости бара и анонсы — в наших группах</p>
+            <div class="socials__links">
+              <a class="btn btn--steel" href="https://t.me/bunkerpub" target="_blank" rel="noopener" data-link="telegram">
+                Telegram<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
+              </a>
+              <a class="btn btn--steel" href="https://vk.com/bunkerpub_nvch" target="_blank" rel="noopener" data-link="vk">
+                ВКонтакте<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
+              </a>
+            </div>
+          </div>
         </div>
         <div class="split__media">
           <img id="broadcast-photo" src="images/broadcast.jpg" alt="Зал Бункер Паба с экраном для трансляций" loading="lazy"
@@ -229,6 +242,7 @@
       <div class="foot__col">
         <p><a href="tel:+79515060050" data-site="phone" data-tel>+7 (951) 506-00-50</a></p>
         <ul class="foot__links">
+          <li><a href="https://t.me/bunkerpub" target="_blank" rel="noopener" data-link="telegram">Telegram</a></li>
           <li><a href="https://vk.com/bunkerpub_nvch" target="_blank" rel="noopener" data-link="vk">ВКонтакте</a></li>
           <li><a href="https://wa.me/79515060050" target="_blank" rel="noopener" data-link="whatsapp">WhatsApp</a></li>
           <li data-delivery><a href="https://eda.yandex.ru/r/bunkerpab" target="_blank" rel="noopener" data-link="delivery">Доставка через Яндекс Еду</a></li>
@@ -279,9 +293,9 @@
     </button>
   </dialog>
 
-  <script src="data/site.js"></script>
-  <script src="data/menu.js"></script>
+  <script src="data/site.js?v=3"></script>
+  <script src="data/menu.js?v=3"></script>
   <script src="assets/js/vendor/qrcode.min.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js?v=3"></script>
 </body>
 </html>
