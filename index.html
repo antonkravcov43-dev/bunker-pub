@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Бункер Паб — спорт-бар в Новочеркасске</title>
+  <meta name="description" content="Спорт-бар «Бункер Паб» в Новочеркасске: ул. Московская, 28/22. Каждый день с 12:00 до 01:00. Трансляции спортивных матчей, кухня, разливное пиво. Бронь стола: +7 (951) 506-00-50.">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Бункер Паб — спорт-бар в Новочеркасске">
+  <meta property="og:description" content="ул. Московская, 28/22. Каждый день 12:00–01:00. Спортивные трансляции.">
+  <meta property="og:image" content="assets/img/og.png">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+  <link rel="preload" href="assets/fonts/tektur-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/plex-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BarOrPub",
+    "name": "Бункер Паб",
+    "description": "Спорт-бар в Новочеркасске. Трансляции спортивных матчей.",
+    "image": "assets/img/og.png",
+    "telephone": "+7 951 506-00-50",
+    "foundingDate": "2018",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Московская, 28/22",
+      "addressLocality": "Новочеркасск",
+      "addressRegion": "Ростовская область",
+      "addressCountry": "RU"
+    },
+    "geo": { "@type": "GeoCoordinates", "latitude": 47.415218, "longitude": 40.097318 },
+    "openingHours": "Mo-Su 12:00-01:00",
+    "sameAs": ["https://vk.com/bunkerpub_nvch", "https://yandex.ru/maps/org/bunkerpab/225734405698/"]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#menu">К меню</a>
+
+  <!-- ШАПКА -->
+  <header class="bar" id="bar">
+    <div class="bar__inner">
+      <a class="bar__logo" href="#top" aria-label="Бункер Паб, наверх">
+        <img src="assets/img/logo-160.png" alt="" width="44" height="44">
+      </a>
+
+      <nav class="bar__nav" id="nav" aria-label="Разделы сайта">
+        <a href="#menu">Меню</a>
+        <a href="#broadcast">Трансляции</a>
+        <a href="#hall">Зал</a>
+        <a href="#find">Как найти</a>
+        <a class="bar__nav-phone" href="tel:+79515060050" data-site="phone" data-tel>+7 (951) 506-00-50</a>
+      </nav>
+
+      <a class="bar__phone" href="tel:+79515060050" data-site="phone" data-tel>+7 (951) 506-00-50</a>
+      <button class="btn btn--red bar__book" type="button" data-book>
+        <span class="bar__book-full">Забронировать стол</span><span class="bar__book-short">Бронь стола</span>
+      </button>
+
+      <button class="bar__burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Открыть разделы">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ПЕРВЫЙ ЭКРАН -->
+    <section class="hero" id="top" aria-label="Бункер Паб">
+      <div class="hero__stage">
+        <h1 class="hero__logo">
+          <img src="assets/img/logo.png"
+               srcset="assets/img/logo.png 608w, assets/img/logo@2x.png 1216w"
+               sizes="min(52svh, 84vw, 600px)"
+               width="608" height="608"
+               alt="Бункер Паб. Спорт-бар, 2018">
+        </h1>
+        <p class="hero__tagline" data-site="tagline">Спорт-бар в Новочеркасске с 2018 года</p>
+        <div class="hero__actions">
+          <button class="btn btn--red btn--big" type="button" data-book>Забронировать стол</button>
+          <a class="btn btn--steel btn--big" href="#menu">Смотреть меню</a>
+        </div>
+      </div>
+
+      <ul class="facts">
+        <li>
+          <a class="fact" href="#find">
+            <span class="fact__main status" data-status><i class="status__dot" aria-hidden="true"></i><span class="status__text">Каждый день 12:00–01:00</span></span>
+            <span class="fact__sub" data-site="hoursLabel">Каждый день 12:00–01:00</span>
+          </a>
+        </li>
+        <li>
+          <a class="fact" href="https://yandex.ru/maps/org/bunkerpab/225734405698/" target="_blank" rel="noopener" data-link="yandexOrg">
+            <span class="fact__main" data-site="address">ул. Московская, 28/22</span>
+            <span class="fact__sub">Открыть на Яндекс Картах</span>
+          </a>
+        </li>
+        <li>
+          <a class="fact" href="#broadcast">
+            <span class="fact__main">Спортивные трансляции</span>
+            <span class="fact__sub">Матчи и игры в прямом эфире</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ТРАНСЛЯЦИИ -->
+    <section class="section section--concrete" id="broadcast" aria-labelledby="broadcast-title">
+      <div class="wrap split">
+        <div class="split__text">
+          <h2 class="h2" id="broadcast-title">Трансляции</h2>
+          <p class="lead" data-site="broadcast.text">Показываем спортивные матчи и игры в прямом эфире. В дни больших игр столы напротив экрана занимают заранее, поэтому бронируйте.</p>
+          <ul class="leagues" id="leagues" hidden></ul>
+          <button class="btn btn--red btn--big" type="button" data-book>Забронировать стол на матч</button>
+        </div>
+        <div class="split__media">
+          <img id="broadcast-photo" src="images/broadcast.jpg" alt="Зал Бункер Паба с экраном для трансляций" loading="lazy"
+               onerror="this.onerror=null;this.src='images/broadcast-placeholder.svg'">
+        </div>
+      </div>
+    </section>
+
+    <!-- МЕНЮ -->
+    <section class="section menu" id="menu" aria-labelledby="menu-title">
+      <div class="wrap">
+        <h2 class="h2" id="menu-title">Меню</h2>
+        <p class="demo-note" id="demo-note" hidden>Это пример меню. Настоящие позиции и цены вносятся в файл data/menu.js</p>
+      </div>
+
+      <nav class="cats" aria-label="Разделы меню">
+        <div class="cats__track" id="cats"></div>
+      </nav>
+
+      <div class="wrap" id="menu-list">
+        <noscript><p class="lead">Чтобы увидеть меню, включите JavaScript в браузере.</p></noscript>
+      </div>
+    </section>
+
+    <!-- ЗАЛ -->
+    <section class="section section--concrete" id="hall" aria-labelledby="hall-title">
+      <div class="wrap">
+        <h2 class="h2" id="hall-title">Зал</h2>
+        <ul class="gallery" id="gallery"></ul>
+      </div>
+    </section>
+
+    <!-- КАК НАЙТИ -->
+    <section class="section" id="find" aria-labelledby="find-title">
+      <div class="wrap find">
+        <div class="find__info">
+          <h2 class="h2" id="find-title">Как найти</h2>
+
+          <dl class="info">
+            <div class="info__row">
+              <dt>Адрес</dt>
+              <dd>
+                <span><span data-site="city">Новочеркасск</span>, <span data-site="address">ул. Московская, 28/22</span></span>
+                <span class="info__note" data-site="addressNote" hidden></span>
+              </dd>
+            </div>
+            <div class="info__row">
+              <dt>Часы</dt>
+              <dd>
+                <span data-site="hoursLabel">Каждый день 12:00–01:00</span>
+                <span class="status status--small" data-status><i class="status__dot" aria-hidden="true"></i><span class="status__text"></span></span>
+              </dd>
+            </div>
+            <div class="info__row">
+              <dt>Телефон</dt>
+              <dd><a class="info__phone" href="tel:+79515060050" data-site="phone" data-tel>+7 (951) 506-00-50</a></dd>
+            </div>
+          </dl>
+
+          <div class="find__actions">
+            <a class="btn btn--red" href="https://yandex.ru/maps/?rtext=~47.415218,40.097318&amp;rtt=auto" target="_blank" rel="noopener" data-link="route">Построить маршрут</a>
+            <a class="btn btn--steel" href="https://yandex.ru/maps/org/bunkerpab/225734405698/" target="_blank" rel="noopener" data-link="yandexOrg">Открыть в Яндекс Картах</a>
+          </div>
+
+          <div class="find__extra">
+            <figure class="qr">
+              <div class="qr__code" id="qr" role="img" aria-label="QR-код со ссылкой на Бункер Паб в Яндекс Картах"></div>
+              <figcaption>Наведите камеру телефона, и карточка бара откроется в Яндекс Картах</figcaption>
+            </figure>
+            <iframe class="rating" id="rating" title="Рейтинг Бункер Паба на Яндекс Картах"
+                    src="https://yandex.ru/sprav/widget/rating-badge/225734405698?type=rating&amp;theme=dark"
+                    width="150" height="50" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <div class="find__map">
+          <iframe id="map" title="Бункер Паб на Яндекс Картах" loading="lazy" allowfullscreen
+                  src="https://yandex.ru/map-widget/v1/?ll=40.097318%2C47.415218&amp;z=17&amp;oid=225734405698&amp;ol=biz"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ПОДВАЛ -->
+  <footer class="foot">
+    <div class="wrap foot__grid">
+      <a class="foot__logo" href="#top" aria-label="Бункер Паб, наверх">
+        <img src="assets/img/logo-160.png" alt="" width="88" height="88" loading="lazy">
+      </a>
+      <div class="foot__col">
+        <p><span data-site="city">Новочеркасск</span>, <span data-site="address">ул. Московская, 28/22</span></p>
+        <p data-site="hoursLabel">Каждый день 12:00–01:00</p>
+      </div>
+      <div class="foot__col">
+        <p><a href="tel:+79515060050" data-site="phone" data-tel>+7 (951) 506-00-50</a></p>
+        <ul class="foot__links">
+          <li><a href="https://vk.com/bunkerpub_nvch" target="_blank" rel="noopener" data-link="vk">ВКонтакте</a></li>
+          <li><a href="https://wa.me/79515060050" target="_blank" rel="noopener" data-link="whatsapp">WhatsApp</a></li>
+          <li data-delivery hidden><a href="#" target="_blank" rel="noopener" data-link="delivery">Доставка</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wrap foot__legal">
+      <p>© 2018–<span id="year">2026</span> Бункер Паб</p>
+      <p>Чрезмерное употребление алкоголя вредит вашему здоровью. 18+</p>
+    </div>
+  </footer>
+
+  <!-- БРОНЬ СТОЛА -->
+  <dialog class="sheet" id="book-dialog" aria-labelledby="book-title">
+    <div class="sheet__box">
+      <button class="sheet__close" type="button" data-close aria-label="Закрыть">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+      <h2 class="sheet__title" id="book-title">Бронь стола</h2>
+      <p class="sheet__text">Позвоните или напишите в WhatsApp: назовите дату, время и сколько вас будет.</p>
+      <a class="sheet__phone" href="tel:+79515060050" data-site="phone" data-tel>+7 (951) 506-00-50</a>
+      <p class="status status--small" data-status><i class="status__dot" aria-hidden="true"></i><span class="status__text"></span></p>
+      <div class="sheet__actions">
+        <a class="btn btn--red btn--big" href="tel:+79515060050" data-tel>Позвонить</a>
+        <a class="btn btn--steel btn--big" href="https://wa.me/79515060050" target="_blank" rel="noopener" data-link="whatsappBook">Написать в WhatsApp</a>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ПРОСМОТР ФОТО БЛЮДА -->
+  <dialog class="viewer" id="viewer" aria-labelledby="viewer-name">
+    <button class="viewer__close" type="button" data-close aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+    <button class="viewer__nav viewer__nav--prev" type="button" data-step="-1" aria-label="Предыдущее блюдо">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8"/></svg>
+    </button>
+    <figure class="viewer__fig">
+      <img class="viewer__img" id="viewer-img" src="" alt="">
+      <figcaption class="viewer__cap">
+        <span class="viewer__name" id="viewer-name"></span>
+        <span class="viewer__meta"><span id="viewer-weight"></span><span class="viewer__price" id="viewer-price"></span></span>
+        <span class="viewer__note" id="viewer-note"></span>
+      </figcaption>
+    </figure>
+    <button class="viewer__nav viewer__nav--next" type="button" data-step="1" aria-label="Следующее блюдо">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8"/></svg>
+    </button>
+  </dialog>
+
+  <script src="data/site.js"></script>
+  <script src="data/menu.js"></script>
+  <script src="assets/js/vendor/qrcode.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
