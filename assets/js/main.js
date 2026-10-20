@@ -43,6 +43,7 @@
     yandexOrg: S.yandexOrg,
     route: S.lat && S.lon ? "https://yandex.ru/maps/?rtext=~" + S.lat + "," + S.lon + "&rtt=auto" : "",
     vk: S.vk,
+    telegram: S.telegram,
     whatsapp: S.whatsapp ? "https://wa.me/" + S.whatsapp : "",
     whatsappBook: S.whatsapp ? "https://wa.me/" + S.whatsapp + "?text=" + encodeURIComponent(S.whatsappText || "") : "",
     delivery: S.delivery
