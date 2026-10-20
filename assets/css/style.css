@@ -534,7 +534,31 @@ a { color: inherit; }
 
 /* ---------- Меню ---------- */
 .menu { padding-bottom: clamp(64px, 8vw, 112px); }
-.menu .h2 { margin-bottom: 24px; }
+
+.menu__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px 32px;
+  margin-bottom: 28px;
+}
+.menu__head .h2 { margin: 0; }
+@media (max-width: 599px) {
+  .menu__head .btn { width: 100%; }
+}
+
+/* значок «откроется на другом сайте» */
+.ext {
+  flex: none;
+  width: .7em;
+  height: .7em;
+  margin-left: .4em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: square;
+}
 
 .demo-note {
   max-width: 46em;
