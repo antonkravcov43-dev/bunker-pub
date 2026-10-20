@@ -162,6 +162,9 @@ a { color: inherit; }
 .btn--red:hover { --bg: var(--oxide-hi); }
 .btn--steel { --bg: var(--steel); }
 .btn--steel:hover { --bg: var(--steel-hi); }
+/* на бетонном фоне обычная сталь сливается, берём светлее */
+.section--concrete .btn--steel { --bg: #3A3A36; }
+.section--concrete .btn--steel:hover { --bg: #4A4A45; }
 .btn--big {
   min-height: 56px;
   padding: 0 32px;
@@ -527,9 +530,31 @@ a { color: inherit; }
   clip-path: var(--chamfer);
 }
 
+.socials {
+  max-width: 34em;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #3A3A36;
+}
+.socials__label {
+  margin: 0 0 14px;
+  font-size: 15px;
+  color: var(--dust);
+}
+.socials__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 @media (max-width: 899px) {
   .split { grid-template-columns: 1fr; }
   .split__text .btn { width: 100%; }
+  .split__text .socials__links .btn {
+    flex: 1 1 0;
+    width: auto;
+    padding: 0 14px;
+  }
 }
 
 /* ---------- Меню ---------- */
