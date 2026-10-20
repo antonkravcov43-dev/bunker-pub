@@ -231,6 +231,44 @@ a { color: inherit; }
 }
 .bar__nav .bar__nav-phone { display: none; }
 
+/* Telegram и ВК в шапке */
+.bar__social {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.bar__social::before {
+  content: "";
+  width: 1px;
+  height: 18px;
+  margin-right: 12px;
+  background: var(--steel-hi);
+}
+.bar__nav .bar__social a {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--soft);
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.bar__nav .bar__social a:hover { color: #fff; }
+.bar__social svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+.bar__social-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .bar__phone {
   flex: none;
   font: 500 17px/1 var(--f-display);
@@ -266,11 +304,12 @@ a { color: inherit; }
 .bar.is-open .bar__burger span:nth-child(2) { opacity: 0; }
 .bar.is-open .bar__burger span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-@media (max-width: 1099px) {
+@media (max-width: 1279px) {
   .bar__phone { display: none; }
 }
 
-@media (max-width: 899px) {
+/* до 1100px шапка сворачивается в меню-«бургер»: иначе разделы и иконки не помещаются */
+@media (max-width: 1099px) {
   .bar__inner { gap: 12px; }
   .bar__logo { padding: 3px; margin: -3px; }
   .bar__logo img { width: 38px; height: 38px; }
@@ -318,6 +357,33 @@ a { color: inherit; }
     border-bottom: 0;
     font-variant-numeric: tabular-nums;
     letter-spacing: .02em;
+  }
+
+  .bar__social {
+    gap: 12px;
+    padding-top: 12px;
+  }
+  .bar__social::before { display: none; }
+  .bar__nav .bar__social a {
+    flex: 1 1 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    min-height: 52px;
+    border-bottom: 0;
+    background: var(--steel);
+    color: var(--white);
+    font-size: 15px;
+    clip-path: var(--chamfer);
+  }
+  .bar__social .bar__social-label {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
   }
 }
 
