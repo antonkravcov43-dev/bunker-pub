@@ -134,7 +134,7 @@
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && bar.classList.contains("is-open")) { setNav(false); burger.focus(); }
   });
-  window.matchMedia("(min-width: 900px)").addEventListener("change", function (mq) {
+  window.matchMedia("(min-width: 1100px)").addEventListener("change", function (mq) {
     if (mq.matches) setNav(false);
   });
 
