@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <title>Админка — Бункер Паб</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/style.css?v=6">
+  <link rel="stylesheet" href="assets/css/admin.css?v=1">
+</head>
+<body class="adm">
+  <header class="adm-bar">
+    <img src="assets/img/logo-160.png" alt="" width="40" height="40">
+    <span class="adm-bar__title">Админка</span>
+    <a class="adm-bar__link" href="./" target="_blank" rel="noopener">Открыть сайт</a>
+    <button class="adm-bar__link" id="logout" type="button" hidden>Выйти</button>
+  </header>
+
+  <main class="adm-main">
+    <!-- ВХОД -->
+    <section class="adm-login" id="login">
+      <h1 class="adm-h">Вход</h1>
+      <p class="adm-hint">Вставьте ключ доступа. Его выдаёт разработчик сайта, вводить нужно один раз на каждом телефоне или компьютере.</p>
+      <form id="login-form">
+        <label class="fld">
+          <span>Ключ доступа</span>
+          <input class="inp" id="token" type="password" autocomplete="off" spellcheck="false" required>
+        </label>
+        <button class="btn btn--red btn--big" type="submit">Войти</button>
+        <p class="adm-error" id="login-error" hidden></p>
+      </form>
+    </section>
+
+    <!-- РЕДАКТОР -->
+    <div id="app" hidden>
+      <nav class="adm-tabs" aria-label="Разделы админки">
+        <button class="cat-btn is-active" type="button" data-tab="main">Основное</button>
+        <button class="cat-btn" type="button" data-tab="notice">Объявление</button>
+        <button class="cat-btn" type="button" data-tab="broadcast">Трансляции</button>
+        <button class="cat-btn" type="button" data-tab="bar">Барное меню</button>
+        <button class="cat-btn" type="button" data-tab="gallery">Фото зала</button>
+        <button class="cat-btn" type="button" data-tab="links">Ссылки</button>
+      </nav>
+
+      <section class="adm-panel" data-panel="main">
+        <h2 class="adm-h">Основное</h2>
+        <label class="fld"><span>Телефон</span>
+          <input class="inp" data-bind="phone" type="tel" inputmode="tel" placeholder="+7 (951) 506-00-50"></label>
+        <div class="row2">
+          <label class="fld"><span>Открываемся</span>
+            <input class="inp" data-bind="opens" type="time" required></label>
+          <label class="fld"><span>Закрываемся</span>
+            <input class="inp" data-bind="closes" type="time" required></label>
+        </div>
+        <label class="fld"><span>Подпись к часам работы</span>
+          <input class="inp" data-bind="hoursLabel" type="text" maxlength="60"></label>
+        <p class="adm-hint">По часам сайт сам пишет «Открыто» или «Закрыто» по московскому времени.</p>
+        <label class="fld"><span>Адрес</span>
+          <input class="inp" data-bind="address" type="text" maxlength="80"></label>
+        <label class="fld"><span>Уточнение ко входу (необязательно)</span>
+          <input class="inp" data-bind="addressNote" type="text" maxlength="80" placeholder="Например: цокольный этаж, вход с улицы"></label>
+        <label class="fld"><span>Строка под логотипом</span>
+          <input class="inp" data-bind="tagline" type="text" maxlength="70"></label>
+      </section>
+
+      <section class="adm-panel" data-panel="notice" hidden>
+        <h2 class="adm-h">Объявление</h2>
+        <p class="adm-hint">Красная строка вверху сайта: акция, анонс матча, изменение часов. Пустой текст — объявления нет.</p>
+        <label class="fld"><span>Текст</span>
+          <textarea class="inp" data-bind="announcement.text" maxlength="140" rows="3" placeholder="Например: В субботу финал Лиги чемпионов, бронируйте столы"></textarea></label>
+        <label class="fld"><span>Ссылка при нажатии (необязательно)</span>
+          <input class="inp" data-bind="announcement.link" type="url" inputmode="url" placeholder="https://…"></label>
+        <p class="adm-hint">Так будет на сайте:</p>
+        <div class="adm-preview"><div class="notice" id="notice-preview"><span class="notice__mark"></span><span class="notice__text"></span></div></div>
+        <button class="btn btn--steel" type="button" id="notice-clear">Убрать объявление</button>
+      </section>
+
+      <section class="adm-panel" data-panel="broadcast" hidden>
+        <h2 class="adm-h">Трансляции</h2>
+        <label class="fld"><span>Текст блока</span>
+          <textarea class="inp" data-bind="broadcast.text" maxlength="400" rows="4"></textarea></label>
+        <div class="fld"><span>Виды спорта и турниры</span>
+          <div class="chips" id="leagues"></div>
+          <form class="add-line" id="league-form">
+            <input class="inp" id="league-input" type="text" maxlength="40" placeholder="Например: Футбол, РПЛ, UFC">
+            <button class="btn btn--steel" type="submit">Добавить</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="adm-panel" data-panel="bar" hidden>
+        <h2 class="adm-h">Барное меню</h2>
+        <p class="adm-hint">То, чего нет в Яндекс Еде: разливное пиво, коктейли, крепкое. Выводится в конце меню строками, без фото. Блюда кухни обновляются сами из Яндекс Еды.</p>
+        <div id="bar"></div>
+        <button class="btn btn--steel" type="button" id="bar-add">Добавить раздел</button>
+      </section>
+
+      <section class="adm-panel" data-panel="gallery" hidden>
+        <h2 class="adm-h">Фото зала</h2>
+        <p class="adm-hint">Первое фото на сайте крупное. Порядок меняется стрелками. Большие фото сожмутся сами.</p>
+        <div class="photos" id="photos"></div>
+        <label class="btn btn--steel adm-file">
+          <input type="file" id="photo-input" accept="image/*" multiple>
+          Добавить фото
+        </label>
+      </section>
+
+      <section class="adm-panel" data-panel="links" hidden>
+        <h2 class="adm-h">Ссылки</h2>
+        <label class="fld"><span>Доставка (Яндекс Еда)</span>
+          <input class="inp" data-bind="delivery" type="url" inputmode="url"></label>
+        <label class="fld"><span>Telegram</span>
+          <input class="inp" data-bind="telegram" type="url" inputmode="url"></label>
+        <label class="fld"><span>ВКонтакте</span>
+          <input class="inp" data-bind="vk" type="url" inputmode="url"></label>
+        <label class="fld"><span>WhatsApp: номер только цифрами</span>
+          <input class="inp" data-bind="whatsapp" type="text" inputmode="numeric" placeholder="79515060050"></label>
+        <label class="fld"><span>Готовый текст сообщения для брони в WhatsApp</span>
+          <input class="inp" data-bind="whatsappText" type="text" maxlength="120"></label>
+        <p class="adm-hint">Пустое поле — кнопка этой ссылки на сайте скроется.</p>
+      </section>
+    </div>
+  </main>
+
+  <div class="adm-save" id="savebar" hidden>
+    <span class="adm-save__status" id="status" role="status">Изменений нет</span>
+    <button class="btn btn--red" type="button" id="save" disabled>Сохранить</button>
+  </div>
+
+  <script src="assets/js/admin.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+# Публикация сайта и ежедневное обновление меню из Яндекс Еды.
+#
+# - Любое изменение в репозитории (загрузка файлов, сохранение в админке)
+#   сразу публикует сайт.
+# - Каждый день в 06:00 по Москве робот забирает меню из Яндекс Еды,
+#   сохраняет изменения и публикует сайт.
+# - Вручную: вкладка Actions → «Сайт» → Run workflow.
+
+name: Сайт
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  menu:
+    name: Меню из Яндекс Еды
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - name: Забрать меню
+        run: python tools/sync_menu.py
+      - name: Сохранить изменения
+        run: |
+          git config user.name "menu-sync-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/menu.js data/menu-photos.json images/menu
+          if git diff --cached --quiet; then
+            echo "Меню не изменилось"
+          else
+            git commit -m "Меню обновлено из Яндекс Еды"
+            git push
+          fi
+
+  deploy:
+    name: Публикация
+    needs: menu
+    # Публикуем и тогда, когда меню не удалось обновить: сайт остаётся с прошлым меню.
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

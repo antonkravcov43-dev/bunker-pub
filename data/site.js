@@ -1,64 +1,68 @@
-/*
-  Контакты и тексты сайта «Бункер Паб».
-  Меняйте значения в кавычках. Кавычки, запятые и скобки не трогайте.
-  После правки просто сохраните файл и обновите страницу.
-*/
+// Настройки сайта «Бункер Паб»: контакты, часы, тексты, фото зала.
+// Удобнее всего менять через админку: /admin.html
+// Руками тоже можно, но это строгий JSON: ключи и строки только в двойных кавычках.
 window.SITE = {
-  name: "Бункер Паб",
-  tagline: "Спорт-бар в Новочеркасске с 2018 года",
-
-  // Телефон: как показывать на сайте и как набирать (только цифры, с +7)
-  phone: "+7 (951) 506-00-50",
-  phoneDial: "+79515060050",
-
-  // WhatsApp: номер только цифрами, без + и пробелов
-  whatsapp: "79515060050",
-  whatsappText: "Здравствуйте! Хочу забронировать стол",
-
-  vk: "https://vk.com/bunkerpub_nvch",
-  telegram: "https://t.me/bunkerpub",
-
-  // Ссылка на вашу страницу в Яндекс Еде: вкладка «Заказ», кнопка в меню и ссылка в подвале.
-  // Если оставить пусто, все три скроются.
-  delivery: "https://eda.yandex.ru/r/bunkerpab",
-
-  city: "Новочеркасск",
-  address: "ул. Московская, 28/22",
-  // Уточнение ко входу, например "Цокольный этаж, вход с улицы". Пусто — не показывается.
-  addressNote: "",
-
-  // Часы работы. Сайт сам пишет «Открыто» или «Закрыто» по московскому времени.
-  hoursLabel: "Каждый день 12:00–01:00",
-  opens: "12:00",
-  closes: "01:00",
-
-  // Яндекс Карты
-  yandexOrgId: "225734405698",
-  yandexOrg: "https://yandex.ru/maps/org/bunkerpab/225734405698/",
-  lat: 47.415218,
-  lon: 40.097318,
-
-  // Блок «Трансляции»
-  broadcast: {
-    text: "Показываем спортивные матчи и игры в прямом эфире. В дни больших игр столы напротив экрана занимают заранее, поэтому бронируйте.",
-    // Виды спорта или турниры, которые показываете. Пустой список — строка не выводится.
-    // ПОДТВЕРДИТЕ: впишите свои, например ["Футбол", "Хоккей", "Бокс и ММА", "Киберспорт"]
-    leagues: [],
-    photo: "images/broadcast.jpg"
+  "name": "Бункер Паб",
+  "tagline": "Спорт-бар в Новочеркасске с 2018 года",
+  "phone": "+7 (951) 506-00-50",
+  "phoneDial": "+79515060050",
+  "whatsapp": "79515060050",
+  "whatsappText": "Здравствуйте! Хочу забронировать стол",
+  "vk": "https://vk.com/bunkerpub_nvch",
+  "telegram": "https://t.me/bunkerpub",
+  "delivery": "https://eda.yandex.ru/r/bunkerpab",
+  "city": "Новочеркасск",
+  "address": "ул. Московская, 28/22",
+  "addressNote": "",
+  "hoursLabel": "Каждый день 12:00–01:00",
+  "opens": "12:00",
+  "closes": "01:00",
+  "announcement": {
+    "text": "",
+    "link": ""
   },
-
-  // Блок «Зал»: фото из папки images/gallery.
-  // Первое фото выводится крупно. caption — подпись при просмотре фото.
-  // focus — необязательно: какую часть фото держать в кадре, если оно обрезается
-  // ("50% 50%" — центр, "0% 0%" — левый верхний угол).
-  gallery: [
-    { photo: "images/gallery/bar.jpg", caption: "Бар" },
-    { photo: "images/gallery/hall-screen.jpg", caption: "Зал с экраном" },
-    { photo: "images/gallery/bottles.jpg", caption: "Стена бутылок" },
-    { photo: "images/gallery/jerseys.jpg", caption: "Стена с игровыми футболками" },
-    { photo: "images/gallery/hall.jpg", caption: "Зал" },
-    { photo: "images/gallery/shelves.jpg", caption: "Витрина" },
-    { photo: "images/gallery/entrance.jpg", caption: "Вход с улицы Московской", focus: "10% 12%" },
-    { photo: "images/gallery/hall-evening.jpg", caption: "Зал вечером" }
+  "yandexOrgId": "225734405698",
+  "yandexOrg": "https://yandex.ru/maps/org/bunkerpab/225734405698/",
+  "lat": 47.415218,
+  "lon": 40.097318,
+  "broadcast": {
+    "text": "Показываем спортивные матчи и игры в прямом эфире. В дни больших игр столы напротив экрана занимают заранее, поэтому бронируйте.",
+    "leagues": [],
+    "photo": "images/broadcast.jpg"
+  },
+  "gallery": [
+    {
+      "photo": "images/gallery/bar.jpg",
+      "caption": "Бар"
+    },
+    {
+      "photo": "images/gallery/hall-screen.jpg",
+      "caption": "Зал с экраном"
+    },
+    {
+      "photo": "images/gallery/bottles.jpg",
+      "caption": "Стена бутылок"
+    },
+    {
+      "photo": "images/gallery/jerseys.jpg",
+      "caption": "Стена с игровыми футболками"
+    },
+    {
+      "photo": "images/gallery/hall.jpg",
+      "caption": "Зал"
+    },
+    {
+      "photo": "images/gallery/shelves.jpg",
+      "caption": "Витрина"
+    },
+    {
+      "photo": "images/gallery/entrance.jpg",
+      "caption": "Вход с улицы Московской",
+      "focus": "10% 12%"
+    },
+    {
+      "photo": "images/gallery/hall-evening.jpg",
+      "caption": "Зал вечером"
+    }
   ]
 };

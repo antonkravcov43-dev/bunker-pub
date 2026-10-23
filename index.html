@@ -25,7 +25,7 @@
   <link rel="preload" href="assets/fonts/tektur-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/plex-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <!-- ?v= — номер версии: при каждом обновлении стилей или скриптов его меняют, чтобы браузеры сразу взяли новые файлы -->
-  <link rel="stylesheet" href="assets/css/style.css?v=5">
+  <link rel="stylesheet" href="assets/css/style.css?v=6">
 
   <script type="application/ld+json">
   {
@@ -94,6 +94,7 @@
   <main>
     <!-- ПЕРВЫЙ ЭКРАН -->
     <section class="hero" id="top" aria-label="Бункер Паб">
+      <a class="notice" id="notice" hidden><span class="notice__mark" aria-hidden="true"></span><span class="notice__text"></span></a>
       <div class="hero__stage">
         <h1 class="hero__logo">
           <img src="assets/img/logo.png"
@@ -303,9 +304,10 @@
     </button>
   </dialog>
 
-  <script src="data/site.js?v=3"></script>
-  <script src="data/menu.js?v=4"></script>
+  <script src="data/site.js?v=4"></script>
+  <script src="data/menu.js?v=5"></script>
+  <script src="data/bar.js?v=1"></script>
   <script src="assets/js/vendor/qrcode.min.js"></script>
-  <script src="assets/js/main.js?v=4"></script>
+  <script src="assets/js/main.js?v=5"></script>
 </body>
 </html>

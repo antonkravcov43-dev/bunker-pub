@@ -1,10 +1,11 @@
 /* Бункер Паб — поведение страницы.
-   Данные берутся из data/site.js и data/menu.js, здесь их править не нужно. */
+   Данные берутся из data/site.js, data/menu.js и data/bar.js, здесь их править не нужно. */
 (function () {
   "use strict";
 
   var S = window.SITE || {};
-  var MENU = window.MENU || [];
+  // меню из Яндекс Еды, а за ним барное меню из админки
+  var MENU = (window.MENU || []).concat(window.BAR_MENU || []);
   var PLACEHOLDER = "images/menu/placeholder.svg";
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -54,6 +55,20 @@
     else a.hidden = true;
   });
   $$("[data-delivery]").forEach(function (n) { n.hidden = !S.delivery; });
+
+  /* ---------- Объявление над первым экраном (из админки) ---------- */
+  var notice = $("#notice");
+  var ann = S.announcement || {};
+  if (notice && ann.text) {
+    $(".notice__text", notice).textContent = ann.text;
+    // ссылкой может быть только адрес сайта, якорь или телефон
+    if (ann.link && /^(https?:\/\/|#|tel:)/.test(ann.link)) {
+      notice.href = ann.link;
+      if (/^https?:\/\//.test(ann.link)) { notice.target = "_blank"; notice.rel = "noopener"; }
+    }
+    notice.hidden = false;
+    $(".hero").classList.add("has-notice");
+  }
 
   function setSrc(node, src) {
     if (node && src && node.getAttribute("src") !== src) node.setAttribute("src", src);

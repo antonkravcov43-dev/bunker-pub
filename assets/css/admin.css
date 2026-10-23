@@ -1,0 +1,259 @@
+/* Админка «Бункер Паб». Цвета и шрифты берутся из style.css. */
+
+.adm { min-height: 100vh; }
+
+.adm-bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--steel);
+  background: var(--black);
+}
+.adm-bar img { display: block; width: 40px; height: 40px; }
+.adm-bar__title {
+  margin-right: auto;
+  font: 700 18px/1 var(--f-display);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.adm-bar__link {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--dust);
+  font: 500 15px/44px var(--f-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+.adm-bar__link:hover { color: var(--white); }
+
+.adm-main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 140px;
+}
+
+.adm-h {
+  margin: 0 0 12px;
+  font: 800 clamp(26px, 6vw, 34px)/1.05 var(--f-display);
+  text-transform: uppercase;
+}
+.adm-hint {
+  margin: 0 0 20px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--dust);
+}
+.adm-error {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--oxide-hi);
+  background: #1d1211;
+  color: var(--white);
+  font-size: 15px;
+}
+.adm-login form .btn { width: 100%; }
+
+.adm-tabs {
+  position: sticky;
+  top: 60px;
+  z-index: 20;
+  display: flex;
+  gap: 2px;
+  margin: -24px -16px 28px;
+  padding: 0 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--steel);
+  background: var(--black);
+}
+.adm-tabs::-webkit-scrollbar { display: none; }
+.adm-tabs .cat-btn { padding: 0 12px; }
+.adm-tabs .cat-btn::after { left: 12px; right: 12px; }
+
+/* поля */
+.fld {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.fld > span {
+  font-size: 15px;
+  color: var(--dust);
+}
+.inp {
+  width: 100%;
+  min-height: 50px;
+  padding: 11px 14px;
+  border: 1px solid var(--steel-hi);
+  border-radius: 0;
+  background: var(--concrete);
+  color: var(--white);
+  font: 400 17px/1.4 var(--f-text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.inp::placeholder { color: #6d6b67; }
+.inp:focus { border-color: var(--dust); outline: none; }
+.inp:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; }
+textarea.inp { min-height: 96px; resize: vertical; }
+input[type="time"].inp { color-scheme: dark; }
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.add-line {
+  display: flex;
+  gap: 8px;
+}
+.add-line .btn { flex: none; }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 14px;
+  background: var(--steel);
+  font: 500 15px/1 var(--f-display);
+}
+.chip button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: none;
+  color: var(--dust);
+  font-size: 22px;
+  cursor: pointer;
+}
+.chip button:hover { color: var(--white); }
+
+.adm-preview { margin-bottom: 16px; border: 1px solid var(--steel); }
+.adm-preview .notice.is-empty { background: var(--steel); color: var(--dust); }
+
+/* карточки барного меню */
+.adm-card {
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid var(--steel);
+  background: #0f0f0e;
+}
+.adm-card__head {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.adm-card__title { font: 600 18px/1.3 var(--f-display); }
+.adm-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px 100px auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--steel);
+}
+.bar-row__tools { display: flex; gap: 4px; }
+
+@media (max-width: 599px) {
+  .bar-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "name name" "weight price" "tools tools";
+  }
+  .bar-row__name { grid-area: name; }
+  .bar-row__weight { grid-area: weight; }
+  .bar-row__price { grid-area: price; }
+  .bar-row__tools { grid-area: tools; justify-content: flex-end; }
+}
+
+.icon-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: var(--steel);
+  color: var(--white);
+  font: 600 20px/1 var(--f-text);
+  cursor: pointer;
+}
+.icon-btn:hover { background: var(--steel-hi); }
+.btn--danger:hover { --bg: var(--oxide); }
+
+/* фото зала */
+.photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  gap: 14px 10px;
+  margin-bottom: 20px;
+}
+.photo-card {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.photo-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--steel);
+}
+.photo-card.is-main img { outline: 2px solid var(--oxide-hi); outline-offset: -2px; }
+.photo-card__tools { display: flex; gap: 4px; }
+.photo-card__tools .icon-btn:last-child { margin-left: auto; }
+
+.adm-file { position: relative; overflow: hidden; }
+.adm-file input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* панель сохранения */
+.adm-save {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--steel);
+  background: rgba(0, 0, 0, .96);
+}
+.adm-save__status {
+  flex: 1;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--dust);
+}
+.adm-save.is-dirty .adm-save__status { color: var(--white); }
+.adm-save__status.is-error { color: #ff8a7e; }
+.adm-save .btn { flex: none; min-width: 140px; }
+.adm-save .btn:disabled { opacity: .45; cursor: default; }

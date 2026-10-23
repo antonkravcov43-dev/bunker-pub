@@ -417,6 +417,28 @@ a { color: inherit; }
   background: radial-gradient(ellipse 46% 42% at 50% 40%, rgba(242, 236, 226, .085), rgba(242, 236, 226, .02) 55%, transparent 75%);
 }
 
+/* объявление из админки: акция, анонс матча */
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px var(--gutter);
+  background: var(--oxide);
+  color: #fff;
+  font: 600 16px/1.35 var(--f-text);
+  text-align: center;
+  text-decoration: none;
+}
+.notice[href]:hover { background: var(--oxide-hi); }
+.notice__mark {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  background: #fff;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
 .hero__stage {
   flex: 1;
   display: flex;
@@ -498,6 +520,9 @@ a { color: inherit; }
 @media (max-width: 899px) {
   .hero__stage { gap: 14px; padding-top: 8px; padding-bottom: 20px; }
   .hero__logo img { width: min(34svh, 78vw); }
+  /* с объявлением логотип чуть меньше, чтобы первый экран помещался целиком */
+  .hero.has-notice .hero__logo img { width: min(29svh, 70vw); }
+  .notice { padding-block: 10px; font-size: 15px; }
   .hero__actions { flex-direction: column; align-self: stretch; margin-top: 2px; }
   .hero__actions .btn { width: 100%; min-height: 50px; }
   .facts { grid-template-columns: 1fr; }
