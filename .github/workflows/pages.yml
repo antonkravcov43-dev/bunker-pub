@@ -4,7 +4,8 @@
 #   сразу публикует сайт.
 # - Каждый день в 06:00 по Москве робот забирает меню из Яндекс Еды,
 #   сохраняет изменения и публикует сайт.
-# - Вручную: вкладка Actions → «Сайт» → Run workflow.
+# - Вручную: вкладка Actions → «Сайт» → Run workflow,
+#   или любой коммит со словом [menu] в описании.
 
 name: Сайт
 
@@ -27,7 +28,7 @@ concurrency:
 jobs:
   menu:
     name: Меню из Яндекс Еды
-    if: github.event_name != 'push'
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[menu]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
