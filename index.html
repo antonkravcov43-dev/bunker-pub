@@ -304,9 +304,16 @@
     </button>
   </dialog>
 
-  <script src="data/site.js?v=4"></script>
-  <script src="data/menu.js?v=5"></script>
-  <script src="data/bar.js?v=1"></script>
+  <!-- Данные (настройки, меню, бар) грузятся с меткой минуты: правки из админки и робота меню
+       видны сразу после публикации, браузер не подсунет старую копию из памяти. -->
+  <script>
+    (function () {
+      var t = Math.floor(Date.now() / 60000);
+      ["data/site.js", "data/menu.js", "data/bar.js"].forEach(function (src) {
+        document.write('<script src="' + src + "?t=" + t + '"><\/script>');
+      });
+    })();
+  </script>
   <script src="assets/js/vendor/qrcode.min.js"></script>
   <script src="assets/js/main.js?v=5"></script>
 </body>
