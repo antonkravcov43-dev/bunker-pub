@@ -246,6 +246,44 @@
     changed();
   });
 
+  /* ---------- акции ---------- */
+  function field(label, input) {
+    return el("label", { class: "fld" }, [el("span", { text: label }), input]);
+  }
+  function renderPromos() {
+    var box = $("#promos");
+    var list = state.site.promos || [];
+    box.textContent = "";
+    if (!list.length) box.appendChild(el("p", { class: "adm-hint", text: "Акций нет — раздел на сайте скрыт." }));
+    list.forEach(function (p, i) {
+      box.appendChild(el("div", { class: "adm-card promo-card" }, [
+        el("div", { class: "promo-card__top" }, [
+          field("Метка", el("input", { class: "inp", type: "text", placeholder: "−10%", value: p.badge || "", maxlength: "14",
+            oninput: function (e) { p.badge = e.target.value; changed(); } })),
+          field("Название", el("input", { class: "inp promo-card__title", type: "text", placeholder: "На вынос", value: p.title || "", maxlength: "50",
+            oninput: function (e) { p.title = e.target.value; changed(); } }))
+        ]),
+        field("Пояснение (необязательно)", el("textarea", { class: "inp", rows: "2", maxlength: "160", text: p.text || "",
+          oninput: function (e) { p.text = e.target.value; changed(); } })),
+        el("div", { class: "adm-card__foot" }, [
+          el("div", { class: "bar-row__tools" }, [
+            iconBtn("Выше", "↑", function () { if (move(list, i, -1)) { renderPromos(); changed(); } }),
+            iconBtn("Ниже", "↓", function () { if (move(list, i, 1)) { renderPromos(); changed(); } })
+          ]),
+          dangerBtn("Удалить акцию", function () { list.splice(i, 1); renderPromos(); changed(); })
+        ])
+      ]));
+    });
+  }
+  $("#promo-add").addEventListener("click", function () {
+    if (!state.site.promos) state.site.promos = [];
+    state.site.promos.push({ badge: "", title: "", text: "" });
+    renderPromos();
+    changed();
+    var titles = $$("#promos .promo-card__title");
+    titles[titles.length - 1].focus();
+  });
+
   /* ---------- трансляции: турниры ---------- */
   function renderLeagues() {
     var box = $("#leagues");
@@ -451,6 +489,10 @@
     if (!phoneToDial(s.phone)) return "Укажите телефон.";
     var link = (s.announcement || {}).link;
     if (link && !/^(https?:\/\/|#|tel:)/.test(link)) return "Ссылка в объявлении должна начинаться с https://";
+    var promos = s.promos || [];
+    for (var k = 0; k < promos.length; k++) {
+      if (!String(promos[k].title || "").trim()) return "У акции нет названия: заполните его или удалите акцию.";
+    }
     for (var i = 0; i < state.bar.length; i++) {
       var sec = state.bar[i];
       if (!String(sec.category || "").trim()) return "У раздела барного меню нет названия.";
@@ -527,6 +569,7 @@
   function renderAll() {
     fillInputs();
     renderNoticePreview();
+    renderPromos();
     renderLeagues();
     renderBar();
     renderPhotos();

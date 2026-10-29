@@ -885,6 +885,89 @@ a { color: inherit; }
   .row__price { font-size: 19px; }
 }
 
+/* банкет и фуршет: позиций нет, вместо цены — «по запросу» */
+.row__ask {
+  font: 600 14px/1 var(--f-display);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--dust);
+  white-space: nowrap;
+}
+.events__text {
+  max-width: 40em;
+  margin: 24px 0;
+  color: var(--soft);
+}
+.events__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 599px) {
+  .events__actions .btn { flex: 1 1 100%; }
+}
+
+/* ---------- Акции ---------- */
+.promos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.promo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 32px 28px 36px;
+  background: rgba(0, 0, 0, .45);
+  --cut: 14px;
+  clip-path: var(--chamfer);
+}
+.promo__badge {
+  margin-bottom: 8px;
+  padding: 10px 14px 9px;
+  background: var(--oxide);
+  font: 700 clamp(26px, 2.6vw, 32px)/1 var(--f-display);
+  letter-spacing: .01em;
+  font-variant-numeric: tabular-nums;
+  --cut: 6px;
+  clip-path: var(--chamfer);
+}
+.promo__title {
+  margin: 0;
+  font: 700 clamp(22px, 2.2vw, 28px)/1.15 var(--f-display);
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.promo__text {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--soft);
+}
+
+.promos__socials {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+  max-width: none;
+  margin-top: 40px;
+}
+.promos__socials .socials__label {
+  max-width: 34em;
+  margin: 0;
+  font-size: 17px;
+  color: var(--soft);
+}
+@media (max-width: 599px) {
+  .promos__socials .socials__links { width: 100%; }
+  .promos__socials .btn { flex: 1 1 0; padding: 0 14px; }
+}
+
 /* ---------- Зал ---------- */
 .gallery {
   display: grid;
@@ -988,12 +1071,39 @@ a { color: inherit; }
   margin-bottom: 36px;
 }
 
-.find__extra {
+/* отзывы: Яндекс Карты, 2ГИС, Google Карты */
+.reviews {
+  margin-bottom: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--steel-hi);
+}
+.reviews__head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 24px 32px;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 8px;
 }
+.reviews__title {
+  margin: 0;
+  font: 700 clamp(24px, 3vw, 34px)/1.1 var(--f-display);
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.reviews__text {
+  margin: 0 0 20px;
+  font-size: 16px;
+  color: var(--dust);
+}
+.reviews__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+/* три кнопки в узкой колонке: растягиваются и переносятся ровными рядами */
+.reviews__links .btn { flex: 1 1 auto; padding: 0 18px; }
+
 .qr {
   display: flex;
   align-items: center;
@@ -1038,7 +1148,8 @@ a { color: inherit; }
 
 @media (max-width: 899px) {
   .find { grid-template-columns: 1fr; }
-  .find__actions .btn { flex: 1 1 100%; }
+  .find__actions .btn,
+  .reviews__links .btn { flex: 1 1 100%; }
   .find__map { height: 380px; }
   .info__row { grid-template-columns: 1fr; gap: 4px; }
   .info dt { padding-top: 0; }

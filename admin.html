@@ -9,8 +9,8 @@
   <title>Админка — Бункер Паб</title>
   <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-  <link rel="stylesheet" href="assets/css/style.css?v=6">
-  <link rel="stylesheet" href="assets/css/admin.css?v=1">
+  <link rel="stylesheet" href="assets/css/style.css?v=7">
+  <link rel="stylesheet" href="assets/css/admin.css?v=2">
 </head>
 <body class="adm">
   <header class="adm-bar">
@@ -40,8 +40,10 @@
       <nav class="adm-tabs" aria-label="Разделы админки">
         <button class="cat-btn is-active" type="button" data-tab="main">Основное</button>
         <button class="cat-btn" type="button" data-tab="notice">Объявление</button>
+        <button class="cat-btn" type="button" data-tab="promos">Акции</button>
         <button class="cat-btn" type="button" data-tab="broadcast">Трансляции</button>
         <button class="cat-btn" type="button" data-tab="bar">Барное меню</button>
+        <button class="cat-btn" type="button" data-tab="events">Банкет</button>
         <button class="cat-btn" type="button" data-tab="gallery">Фото зала</button>
         <button class="cat-btn" type="button" data-tab="links">Ссылки</button>
       </nav>
@@ -79,6 +81,15 @@
         <button class="btn btn--steel" type="button" id="notice-clear">Убрать объявление</button>
       </section>
 
+      <section class="adm-panel" data-panel="promos" hidden>
+        <h2 class="adm-h">Акции</h2>
+        <p class="adm-hint">Карточки в разделе «Акции». Метка — короткая красная плашка сверху: «−10%», «Подарок». Если акций нет, раздел на сайте скрывается.</p>
+        <div id="promos"></div>
+        <button class="btn btn--steel" type="button" id="promo-add">Добавить акцию</button>
+        <label class="fld adm-gap"><span>Строка под акциями, рядом с кнопками Telegram и ВК</span>
+          <input class="inp" data-bind="promosNote" type="text" maxlength="140"></label>
+      </section>
+
       <section class="adm-panel" data-panel="broadcast" hidden>
         <h2 class="adm-h">Трансляции</h2>
         <label class="fld"><span>Текст блока</span>
@@ -97,6 +108,13 @@
         <p class="adm-hint">То, чего нет в Яндекс Еде: разливное пиво, коктейли, крепкое. Выводится в конце меню строками, без фото. Блюда кухни обновляются сами из Яндекс Еды.</p>
         <div id="bar"></div>
         <button class="btn btn--steel" type="button" id="bar-add">Добавить раздел</button>
+      </section>
+
+      <section class="adm-panel" data-panel="events" hidden>
+        <h2 class="adm-h">Банкет и фуршет</h2>
+        <p class="adm-hint">Блок в конце меню: строки «Банкетное меню» и «Фуршетное меню» с пометкой «По запросу», под ними этот текст и кнопки «Позвонить» и «Написать в WhatsApp».</p>
+        <label class="fld"><span>Текст блока</span>
+          <textarea class="inp" data-bind="events.text" maxlength="300" rows="3"></textarea></label>
       </section>
 
       <section class="adm-panel" data-panel="gallery" hidden>
@@ -121,6 +139,10 @@
           <input class="inp" data-bind="whatsapp" type="text" inputmode="numeric" placeholder="79515060050"></label>
         <label class="fld"><span>Готовый текст сообщения для брони в WhatsApp</span>
           <input class="inp" data-bind="whatsappText" type="text" maxlength="120"></label>
+        <label class="fld"><span>Отзывы: 2ГИС</span>
+          <input class="inp" data-bind="twogis" type="url" inputmode="url"></label>
+        <label class="fld"><span>Отзывы: Google Карты</span>
+          <input class="inp" data-bind="googleMaps" type="url" inputmode="url"></label>
         <p class="adm-hint">Пустое поле — кнопка этой ссылки на сайте скроется.</p>
       </section>
     </div>
@@ -131,6 +153,6 @@
     <button class="btn btn--red" type="button" id="save" disabled>Сохранить</button>
   </div>
 
-  <script src="assets/js/admin.js?v=1"></script>
+  <script src="assets/js/admin.js?v=2"></script>
 </body>
 </html>

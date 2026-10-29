@@ -40,13 +40,20 @@
     $$("[data-tel]").forEach(function (a) { a.href = "tel:" + S.phoneDial; });
   }
 
+  function waLink(text) {
+    return S.whatsapp ? "https://wa.me/" + S.whatsapp + (text ? "?text=" + encodeURIComponent(text) : "") : "";
+  }
   var links = {
     yandexOrg: S.yandexOrg,
+    yandexReviews: S.yandexOrg ? S.yandexOrg.replace(/\/?$/, "/") + "reviews/" : "",
+    twogis: S.twogis,
+    googleMaps: S.googleMaps,
     route: S.lat && S.lon ? "https://yandex.ru/maps/?rtext=~" + S.lat + "," + S.lon + "&rtt=auto" : "",
     vk: S.vk,
     telegram: S.telegram,
-    whatsapp: S.whatsapp ? "https://wa.me/" + S.whatsapp : "",
-    whatsappBook: S.whatsapp ? "https://wa.me/" + S.whatsapp + "?text=" + encodeURIComponent(S.whatsappText || "") : "",
+    whatsapp: waLink(""),
+    whatsappBook: waLink(S.whatsappText),
+    whatsappEvents: waLink("Здравствуйте! Хочу узнать про банкетное и фуршетное меню"),
     delivery: S.delivery
   };
   $$("[data-link]").forEach(function (a) {
@@ -68,6 +75,22 @@
     }
     notice.hidden = false;
     $(".hero").classList.add("has-notice");
+  }
+
+  /* ---------- Акции (из админки) ---------- */
+  var promoList = $("#promos-list");
+  var promos = (S.promos || []).filter(function (p) { return p.title; });
+  if (promoList && promos.length) {
+    promos.forEach(function (p) {
+      var li = el("li", "promo");
+      if (p.badge) li.appendChild(el("span", "promo__badge", p.badge));
+      li.appendChild(el("h3", "promo__title", p.title));
+      if (p.text) li.appendChild(el("p", "promo__text", p.text));
+      promoList.appendChild(li);
+    });
+  } else if (promoList) {
+    $("#promos").hidden = true;
+    $$('a[href="#promos"]').forEach(function (a) { a.hidden = true; });
   }
 
   function setSrc(node, src) {
@@ -185,6 +208,17 @@
   var demo = $("#demo-note");
   if (demo) demo.hidden = !window.MENU_DEMO;
 
+  function addCat(sec, label) {
+    sections.push(sec);
+    var chip = el("button", "cat-btn", label);
+    chip.type = "button";
+    chip.addEventListener("click", function () {
+      sec.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    });
+    track.appendChild(chip);
+    chips.push(chip);
+  }
+
   MENU.forEach(function (cat, ci) {
     var items = cat.items || [];
     if (!items.length) return;
@@ -248,16 +282,12 @@
     }
 
     list.appendChild(sec);
-    sections.push(sec);
-
-    var chip = el("button", "cat-btn", cat.category);
-    chip.type = "button";
-    chip.addEventListener("click", function () {
-      sec.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
-    });
-    track.appendChild(chip);
-    chips.push(chip);
+    addCat(sec, cat.category);
   });
+
+  // банкет и фуршет — свой блок в конце меню, тоже с кнопкой в полосе разделов
+  var events = $("#events");
+  if (events) addCat(events, $("#events-title").textContent);
 
   // подсветка текущего раздела в полосе категорий
   var catsBar = $(".cats");

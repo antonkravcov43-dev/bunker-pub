@@ -165,6 +165,16 @@ input[type="time"].inp { color-scheme: dark; }
   margin-top: 12px;
 }
 
+/* карточки акций */
+.promo-card__top {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 8px;
+}
+.promo-card .fld { margin-bottom: 12px; }
+.promo-card .adm-card__foot { margin-top: 0; }
+.adm-gap { margin-top: 28px; }
+
 .bar-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 96px 100px auto;

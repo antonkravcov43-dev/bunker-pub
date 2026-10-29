@@ -21,8 +21,31 @@ window.SITE = {
     "text": "",
     "link": ""
   },
+  "promos": [
+    {
+      "badge": "−10%",
+      "title": "На вынос",
+      "text": "Скидка на заказ с собой."
+    },
+    {
+      "badge": "−10%",
+      "title": "В день рождения",
+      "text": "Скидка именинникам."
+    },
+    {
+      "badge": "Подарок",
+      "title": "Сертификат на любую сумму",
+      "text": "Подарочный сертификат: спросите в баре или по телефону."
+    }
+  ],
+  "promosNote": "Другие акции регулярно объявляем в Telegram и ВКонтакте: следите за новостями.",
+  "events": {
+    "text": "Состав и стоимость подбираем под ваше событие и число гостей. Позвоните или напишите в WhatsApp."
+  },
   "yandexOrgId": "225734405698",
   "yandexOrg": "https://yandex.ru/maps/org/bunkerpab/225734405698/",
+  "twogis": "https://2gis.ru/novocherkassk/firm/70000001037433999/tab/reviews",
+  "googleMaps": "https://maps.google.com/?cid=8109321417478571070",
   "lat": 47.415218,
   "lon": 40.097318,
   "broadcast": {

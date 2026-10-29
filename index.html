@@ -25,7 +25,7 @@
   <link rel="preload" href="assets/fonts/tektur-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/plex-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <!-- ?v= — номер версии: при каждом обновлении стилей или скриптов его меняют, чтобы браузеры сразу взяли новые файлы -->
-  <link rel="stylesheet" href="assets/css/style.css?v=6">
+  <link rel="stylesheet" href="assets/css/style.css?v=7">
 
   <script type="application/ld+json">
   {
@@ -46,7 +46,7 @@
     },
     "geo": { "@type": "GeoCoordinates", "latitude": 47.415218, "longitude": 40.097318 },
     "openingHours": "Mo-Su 12:00-01:00",
-    "sameAs": ["https://vk.com/bunkerpub_nvch", "https://t.me/bunkerpub", "https://yandex.ru/maps/org/bunkerpab/225734405698/"]
+    "sameAs": ["https://vk.com/bunkerpub_nvch", "https://t.me/bunkerpub", "https://yandex.ru/maps/org/bunkerpab/225734405698/", "https://2gis.ru/novocherkassk/firm/70000001037433999", "https://maps.google.com/?cid=8109321417478571070"]
   }
   </script>
 </head>
@@ -64,6 +64,7 @@
         <a href="#menu">Меню</a>
         <a href="https://eda.yandex.ru/r/bunkerpab" target="_blank" rel="noopener" data-link="delivery"
            aria-label="Заказ доставки в Яндекс Еде, откроется в новой вкладке">Заказ<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+        <a href="#promos">Акции</a>
         <a href="#broadcast">Трансляции</a>
         <a href="#hall">Зал</a>
         <a href="#find">Как найти</a>
@@ -179,10 +180,45 @@
       <div class="wrap" id="menu-list">
         <noscript><p class="lead">Чтобы увидеть меню, включите JavaScript в браузере.</p></noscript>
       </div>
+
+      <!-- банкет и фуршет: без позиций, состав по запросу -->
+      <div class="wrap">
+        <section class="cat events" id="events" aria-labelledby="events-title">
+          <h3 class="cat__title" id="events-title">Банкет и фуршет</h3>
+          <ul class="rows">
+            <li class="row"><span class="row__name">Банкетное меню</span><span class="row__weight"></span><span class="row__ask">По запросу</span></li>
+            <li class="row"><span class="row__name">Фуршетное меню</span><span class="row__weight"></span><span class="row__ask">По запросу</span></li>
+          </ul>
+          <p class="events__text" data-site="events.text">Состав и стоимость подбираем под ваше событие и число гостей. Позвоните или напишите в WhatsApp.</p>
+          <div class="events__actions">
+            <a class="btn btn--red" href="tel:+79515060050" data-tel>Позвонить</a>
+            <a class="btn btn--steel" href="https://wa.me/79515060050" target="_blank" rel="noopener" data-link="whatsappEvents">Написать в WhatsApp</a>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- АКЦИИ -->
+    <section class="section section--concrete" id="promos" aria-labelledby="promos-title">
+      <div class="wrap">
+        <h2 class="h2" id="promos-title">Акции</h2>
+        <ul class="promos" id="promos-list"></ul>
+        <div class="socials promos__socials">
+          <p class="socials__label" data-site="promosNote">Другие акции регулярно объявляем в Telegram и ВКонтакте: следите за новостями.</p>
+          <div class="socials__links">
+            <a class="btn btn--steel" href="https://t.me/bunkerpub" target="_blank" rel="noopener" data-link="telegram">
+              Telegram<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
+            </a>
+            <a class="btn btn--steel" href="https://vk.com/bunkerpub_nvch" target="_blank" rel="noopener" data-link="vk">
+              ВКонтакте<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ЗАЛ -->
-    <section class="section section--concrete" id="hall" aria-labelledby="hall-title">
+    <section class="section" id="hall" aria-labelledby="hall-title">
       <div class="wrap">
         <h2 class="h2" id="hall-title">Зал</h2>
         <ul class="gallery" id="gallery"></ul>
@@ -190,7 +226,7 @@
     </section>
 
     <!-- КАК НАЙТИ -->
-    <section class="section" id="find" aria-labelledby="find-title">
+    <section class="section section--concrete" id="find" aria-labelledby="find-title">
       <div class="wrap find">
         <div class="find__info">
           <h2 class="h2" id="find-title">Как найти</h2>
@@ -218,18 +254,33 @@
 
           <div class="find__actions">
             <a class="btn btn--red" href="https://yandex.ru/maps/?rtext=~47.415218,40.097318&amp;rtt=auto" target="_blank" rel="noopener" data-link="route">Построить маршрут</a>
-            <a class="btn btn--steel" href="https://yandex.ru/maps/org/bunkerpab/225734405698/" target="_blank" rel="noopener" data-link="yandexOrg">Открыть в Яндекс Картах</a>
           </div>
 
-          <div class="find__extra">
-            <figure class="qr">
-              <div class="qr__code" id="qr" role="img" aria-label="QR-код со ссылкой на Бункер Паб в Яндекс Картах"></div>
-              <figcaption>Наведите камеру телефона, и карточка бара откроется в Яндекс Картах</figcaption>
-            </figure>
-            <iframe class="rating" id="rating" title="Рейтинг Бункер Паба на Яндекс Картах"
-                    src="https://yandex.ru/sprav/widget/rating-badge/225734405698?type=rating&amp;theme=dark"
-                    width="150" height="50" loading="lazy"></iframe>
+          <div class="reviews" id="reviews" aria-labelledby="reviews-title">
+            <div class="reviews__head">
+              <h3 class="reviews__title" id="reviews-title">Отзывы</h3>
+              <iframe class="rating" id="rating" title="Рейтинг Бункер Паба на Яндекс Картах"
+                      src="https://yandex.ru/sprav/widget/rating-badge/225734405698?type=rating&amp;theme=dark"
+                      width="150" height="50" loading="lazy"></iframe>
+            </div>
+            <p class="reviews__text">Читайте, что пишут гости, и оставляйте свой отзыв.</p>
+            <div class="reviews__links">
+              <a class="btn btn--steel" href="https://yandex.ru/maps/org/bunkerpab/225734405698/reviews/" target="_blank" rel="noopener" data-link="yandexReviews">
+                Яндекс Карты<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
+              </a>
+              <a class="btn btn--steel" href="https://2gis.ru/novocherkassk/firm/70000001037433999/tab/reviews" target="_blank" rel="noopener" data-link="twogis">
+                2ГИС<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
+              </a>
+              <a class="btn btn--steel" href="https://maps.google.com/?cid=8109321417478571070" target="_blank" rel="noopener" data-link="googleMaps">
+                Google Карты<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
+              </a>
+            </div>
           </div>
+
+          <figure class="qr">
+            <div class="qr__code" id="qr" role="img" aria-label="QR-код со ссылкой на Бункер Паб в Яндекс Картах"></div>
+            <figcaption>Наведите камеру телефона, и карточка бара откроется в Яндекс Картах</figcaption>
+          </figure>
         </div>
 
         <div class="find__map">
@@ -315,6 +366,6 @@
     })();
   </script>
   <script src="assets/js/vendor/qrcode.min.js"></script>
-  <script src="assets/js/main.js?v=5"></script>
+  <script src="assets/js/main.js?v=6"></script>
 </body>
 </html>
