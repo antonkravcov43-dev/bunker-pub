@@ -123,6 +123,20 @@ a { color: inherit; }
 }
 .skip:focus { top: 12px; }
 
+/* курсор-логотип: белая шестерня, над ссылками и кнопками — красная.
+   Только для мыши (на телефонах курсора нет) и не в админке. Первая строка — для браузеров без image-set. */
+@media (hover: hover) and (pointer: fine) {
+  body:not(.adm),
+  body:not(.adm) button:disabled {
+    cursor: url("../img/cursor.png") 16 16, auto;
+    cursor: image-set(url("../img/cursor.png") 1x, url("../img/cursor@2x.png") 2x) 16 16, auto;
+  }
+  body:not(.adm) :is(a, button, label, summary, [role="button"]):not(:disabled) {
+    cursor: url("../img/cursor-link.png") 16 16, pointer;
+    cursor: image-set(url("../img/cursor-link.png") 1x, url("../img/cursor-link@2x.png") 2x) 16 16, pointer;
+  }
+}
+
 .wrap {
   max-width: var(--max);
   margin: 0 auto;
