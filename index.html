@@ -25,7 +25,7 @@
   <link rel="preload" href="assets/fonts/tektur-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/plex-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <!-- ?v= — номер версии: при каждом обновлении стилей или скриптов его меняют, чтобы браузеры сразу взяли новые файлы -->
-  <link rel="stylesheet" href="assets/css/style.css?v=7">
+  <link rel="stylesheet" href="assets/css/style.css?v=8">
 
   <script type="application/ld+json">
   {
@@ -166,20 +166,35 @@
       <div class="wrap">
         <div class="menu__head">
           <h2 class="h2" id="menu-title">Меню</h2>
-          <a class="btn btn--steel" href="https://eda.yandex.ru/r/bunkerpab" target="_blank" rel="noopener" data-link="delivery">
-            Заказать доставку<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
-          </a>
+          <div class="menu__actions">
+            <button class="btn btn--red menu__toggle" type="button" aria-expanded="false" aria-controls="menu-body" data-menu-toggle>
+              <span class="menu__toggle-text">Открыть меню</span><svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5l3.5 3.5 3.5-3.5"/></svg>
+            </button>
+            <a class="btn btn--steel" href="https://eda.yandex.ru/r/bunkerpab" target="_blank" rel="noopener" data-link="delivery">
+              Заказать доставку<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>
+            </a>
+          </div>
         </div>
         <p class="demo-note" id="demo-note" hidden>Это пример меню. Настоящие позиции и цены вносятся в файл data/menu.js</p>
       </div>
 
-      <nav class="cats" aria-label="Разделы меню">
-        <div class="cats__track" id="cats"></div>
-      </nav>
+      <!-- само меню свёрнуто: при прокрутке сайта его не видно, открывается кнопкой или пунктом «Меню» -->
+      <div class="menu__body" id="menu-body" hidden>
+        <nav class="cats" aria-label="Разделы меню">
+          <div class="cats__track" id="cats"></div>
+        </nav>
 
-      <div class="wrap" id="menu-list">
-        <noscript><p class="lead">Чтобы увидеть меню, включите JavaScript в браузере.</p></noscript>
+        <div class="wrap" id="menu-list">
+          <noscript><p class="lead">Чтобы увидеть меню, включите JavaScript в браузере.</p></noscript>
+        </div>
+
+        <div class="wrap menu__fold">
+          <button class="btn btn--steel" type="button" aria-controls="menu-body" data-menu-close>
+            Свернуть меню<svg class="chev chev--up" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5l3.5 3.5 3.5-3.5"/></svg>
+          </button>
+        </div>
       </div>
+      <noscript><style>#menu-body[hidden] { display: block !important; } .menu__toggle, .menu__fold { display: none !important; }</style></noscript>
 
       <!-- банкет и фуршет: без позиций, состав по запросу -->
       <div class="wrap">
@@ -366,6 +381,6 @@
     })();
   </script>
   <script src="assets/js/vendor/qrcode.min.js"></script>
-  <script src="assets/js/main.js?v=6"></script>
+  <script src="assets/js/main.js?v=7"></script>
 </body>
 </html>

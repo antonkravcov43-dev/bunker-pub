@@ -200,6 +200,7 @@
 
   /* ---------- Меню ---------- */
   var list = $("#menu-list");
+  var menuBody = $("#menu-body");
   var track = $("#cats");
   var photos = [];       // все позиции с фото подряд, для листания в просмотре
   var sections = [];
@@ -293,7 +294,7 @@
   var catsBar = $(".cats");
   var activeIdx = -1;
   function spy() {
-    if (!sections.length) return;
+    if (!sections.length || menuBody.hidden) return;
     var line = bar.offsetHeight + catsBar.offsetHeight + 32;
     var idx = 0;
     sections.forEach(function (s, i) { if (s.getBoundingClientRect().top - line <= 0) idx = i; });
@@ -321,6 +322,35 @@
     requestAnimationFrame(function () { spyQueued = false; spy(); });
   }, { passive: true });
   spy();
+
+  /* ---------- Меню свёрнуто, пока его не откроют ---------- */
+  function setMenu(open) {
+    menuBody.hidden = !open;
+    $$("[data-menu-toggle]").forEach(function (b) {
+      b.setAttribute("aria-expanded", String(open));
+      $(".menu__toggle-text", b).textContent = open ? "Свернуть меню" : "Открыть меню";
+    });
+    if (open) {
+      activeIdx = -1;
+      updateFade();
+      spy();
+    }
+  }
+  $$("[data-menu-toggle]").forEach(function (b) {
+    b.addEventListener("click", function () { setMenu(menuBody.hidden); });
+  });
+  // кнопка внизу меню: сворачиваем и возвращаемся к заголовку «Меню»
+  $$("[data-menu-close]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      setMenu(false);
+      $("#menu").scrollIntoView({ behavior: "instant", block: "start" });
+    });
+  });
+  // «Меню» в шапке, «Смотреть меню» на первом экране и ссылка «К меню» сразу открывают его
+  $$('a[href="#menu"]').forEach(function (a) {
+    a.addEventListener("click", function () { setMenu(true); });
+  });
+  if (location.hash === "#menu") setMenu(true);
 
   /* ---------- Зал ---------- */
   var gallery = $("#gallery");
