@@ -2,10 +2,11 @@
 #
 # - Любое изменение в репозитории (загрузка файлов, сохранение в админке)
 #   сразу публикует сайт.
-# - Каждый день в 06:00 по Москве робот забирает меню из Яндекс Еды,
+# - Каждый день в 06:00 по Москве робот сверяет меню с Яндекс Едой
+#   (tools/sync_menu.py: цены, фото, новые блюда; правки из админки не трогает),
 #   сохраняет изменения и публикует сайт.
-# - Вручную: вкладка Actions → «Сайт» → Run workflow,
-#   или любой коммит со словом [menu] в описании.
+# - Вручную: кнопка «Сверить с Яндекс Едой сейчас» в админке, вкладка
+#   Actions → «Сайт» → Run workflow или любой коммит со словом [menu] в описании.
 
 name: Сайт
 
@@ -36,19 +37,29 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pillow
-      - name: Забрать меню
-        run: python tools/sync_menu.py
-      - name: Сохранить изменения
+      - name: Сверить меню и сохранить
         run: |
           git config user.name "menu-sync-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A data/menu.js data/menu-photos.json images/menu
-          if git diff --cached --quiet; then
-            echo "Меню не изменилось"
-          else
-            git commit -m "Меню обновлено из Яндекс Еды"
-            git push
-          fi
+          # Если, пока робот работал, кто-то сохранил правки в админке, push не пройдёт —
+          # тогда берём свежую версию и сверяем заново поверх неё.
+          for attempt in 1 2 3; do
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            git clean -fdq images/menu
+            python tools/sync_menu.py
+            git add -A data/menu.js data/menu-photos.json images/menu
+            if git diff --cached --quiet; then
+              echo "Меню не изменилось"
+              exit 0
+            fi
+            git commit -q -m "Меню обновлено из Яндекс Еды"
+            if git push -q origin HEAD:main; then
+              exit 0
+            fi
+            echo "В репозитории появились новые правки, пробую ещё раз"
+          done
+          exit 1
 
   deploy:
     name: Публикация

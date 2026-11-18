@@ -9,8 +9,8 @@
   <title>Админка — Бункер Паб</title>
   <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-  <link rel="stylesheet" href="assets/css/style.css?v=7">
-  <link rel="stylesheet" href="assets/css/admin.css?v=2">
+  <link rel="stylesheet" href="assets/css/style.css?v=10">
+  <link rel="stylesheet" href="assets/css/admin.css?v=3">
 </head>
 <body class="adm">
   <header class="adm-bar">
@@ -39,10 +39,10 @@
     <div id="app" hidden>
       <nav class="adm-tabs" aria-label="Разделы админки">
         <button class="cat-btn is-active" type="button" data-tab="main">Основное</button>
+        <button class="cat-btn" type="button" data-tab="menu">Меню</button>
         <button class="cat-btn" type="button" data-tab="notice">Объявление</button>
         <button class="cat-btn" type="button" data-tab="promos">Акции</button>
         <button class="cat-btn" type="button" data-tab="broadcast">Трансляции</button>
-        <button class="cat-btn" type="button" data-tab="bar">Барное меню</button>
         <button class="cat-btn" type="button" data-tab="events">Банкет</button>
         <button class="cat-btn" type="button" data-tab="gallery">Фото зала</button>
         <button class="cat-btn" type="button" data-tab="links">Ссылки</button>
@@ -67,6 +67,20 @@
           <input class="inp" data-bind="addressNote" type="text" maxlength="80" placeholder="Например: цокольный этаж, вход с улицы"></label>
         <label class="fld"><span>Строка под логотипом</span>
           <input class="inp" data-bind="tagline" type="text" maxlength="70"></label>
+      </section>
+
+      <section class="adm-panel" data-panel="menu" hidden>
+        <h2 class="adm-h">Меню</h2>
+        <p class="adm-hint">Все разделы и позиции сайта. Нажмите на раздел, чтобы открыть его, а на позицию — чтобы поменять фото, название, цену, описание, отметку или временно скрыть её. Порядок меняется стрелками.</p>
+        <label class="chk">
+          <input type="checkbox" id="menu-sync">
+          <span>Каждое утро сверять с Яндекс Едой: новые блюда, цены, вес и фото. Названия, описания, отметки, порядок и скрытие из админки робот не трогает.</span>
+        </label>
+        <button class="btn btn--steel adm-gap-b" type="button" id="menu-robot">Сверить с Яндекс Едой сейчас</button>
+        <input class="inp menu-search" id="menu-search" type="search" placeholder="Найти позицию" aria-label="Найти позицию" autocomplete="off">
+        <div id="menu-cats"></div>
+        <button class="btn btn--steel" type="button" id="cat-add">Добавить раздел</button>
+        <p class="adm-hint adm-gap" id="menu-ignored" hidden></p>
       </section>
 
       <section class="adm-panel" data-panel="notice" hidden>
@@ -103,13 +117,6 @@
         </div>
       </section>
 
-      <section class="adm-panel" data-panel="bar" hidden>
-        <h2 class="adm-h">Барное меню</h2>
-        <p class="adm-hint">То, чего нет в Яндекс Еде: разливное пиво, коктейли, крепкое. Выводится в конце меню строками, без фото. Блюда кухни обновляются сами из Яндекс Еды.</p>
-        <div id="bar"></div>
-        <button class="btn btn--steel" type="button" id="bar-add">Добавить раздел</button>
-      </section>
-
       <section class="adm-panel" data-panel="events" hidden>
         <h2 class="adm-h">Банкет и фуршет</h2>
         <p class="adm-hint">Блок в конце меню: строки «Банкетное меню» и «Фуршетное меню» с пометкой «По запросу», под ними этот текст и кнопки «Позвонить» и «Написать в WhatsApp».</p>
@@ -144,15 +151,39 @@
         <label class="fld"><span>Отзывы: Google Карты</span>
           <input class="inp" data-bind="googleMaps" type="url" inputmode="url"></label>
         <p class="adm-hint">Пустое поле — кнопка этой ссылки на сайте скроется.</p>
+
+        <div class="qr-menu">
+          <img src="assets/img/qr-menu.svg" alt="QR-код меню Бункер Паба" width="168" height="168">
+          <div>
+            <p class="qr-menu__title">QR-код меню для столов</p>
+            <p class="adm-hint">Ведёт на постоянную ссылку antonkravcov43-dev.github.io/bunker-pub/menu/ — на телефоне сразу открывается меню. Меню можно менять сколько угодно: QR-код перепечатывать не нужно.</p>
+            <a class="btn btn--steel" href="assets/img/qr-menu.png" download="QR меню Бункер Паб.png">Скачать для печати</a>
+          </div>
+        </div>
       </section>
     </div>
   </main>
 
+  <!-- карточка позиции меню: собирается в admin.js -->
+  <dialog class="adm-dialog" id="item-dialog" aria-labelledby="item-title">
+    <div class="adm-dialog__box" id="item-box"></div>
+  </dialog>
+
+  <!-- предпросмотр: сайт с несохранёнными правками прямо внутри админки, чтобы ничего не потерять -->
+  <dialog class="adm-preview-dlg" id="preview-dialog" aria-label="Предпросмотр сайта">
+    <div class="adm-preview-dlg__bar">
+      <span>Предпросмотр. Чтобы опубликовать, закройте его и нажмите «Сохранить».</span>
+      <button class="btn btn--steel" type="button" id="preview-close">Закрыть</button>
+    </div>
+    <iframe id="preview-frame" title="Предпросмотр сайта"></iframe>
+  </dialog>
+
   <div class="adm-save" id="savebar" hidden>
     <span class="adm-save__status" id="status" role="status">Изменений нет</span>
+    <button class="btn btn--steel" type="button" id="preview">Предпросмотр</button>
     <button class="btn btn--red" type="button" id="save" disabled>Сохранить</button>
   </div>
 
-  <script src="assets/js/admin.js?v=2"></script>
+  <script src="assets/js/admin.js?v=3"></script>
 </body>
 </html>

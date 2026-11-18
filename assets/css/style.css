@@ -712,14 +712,18 @@ a { color: inherit; }
   stroke-linecap: square;
 }
 
-.demo-note {
-  max-width: 46em;
-  margin: 0 0 32px;
-  padding: 12px 16px;
-  border-left: 3px solid var(--oxide-hi);
-  background: #141413;
-  color: var(--dust);
-  font-size: 15px;
+/* полоса «Предпросмотр» при просмотре несохранённых правок из админки */
+.preview-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+  background: var(--oxide);
+  color: var(--white);
+  font: 600 15px/1.35 var(--f-text);
+  text-align: center;
 }
 
 .cats {
@@ -820,6 +824,7 @@ a { color: inherit; }
   cursor: zoom-in;
 }
 .dish__photo {
+  position: relative;
   display: block;
   aspect-ratio: 4 / 3;
   overflow: hidden;
@@ -834,6 +839,35 @@ a { color: inherit; }
   transition: transform .35s ease;
 }
 .dish:hover .dish__photo img { transform: scale(1.03); }
+
+/* отметки из админки: «Новинка», «Хит», «Сезонное» */
+.dish__badge,
+.row__badge {
+  padding: 6px 9px 5px;
+  background: var(--oxide);
+  color: var(--white);
+  font: 700 12px/1 var(--f-display);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  --cut: 5px;
+  clip-path: var(--chamfer);
+}
+.dish__badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.row__badge {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: 2px;
+  padding: 4px 7px 3px;
+  font-size: 11px;
+}
+@media (max-width: 599px) {
+  .dish__badge { top: 6px; left: 6px; padding: 5px 7px 4px; font-size: 11px; }
+}
 
 .dish__body {
   flex: 1;

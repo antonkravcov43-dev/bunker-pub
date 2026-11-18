@@ -25,7 +25,7 @@
   <link rel="preload" href="assets/fonts/tektur-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/plex-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <!-- ?v= — номер версии: при каждом обновлении стилей или скриптов его меняют, чтобы браузеры сразу взяли новые файлы -->
-  <link rel="stylesheet" href="assets/css/style.css?v=9">
+  <link rel="stylesheet" href="assets/css/style.css?v=10">
 
   <script type="application/ld+json">
   {
@@ -175,7 +175,6 @@
             </a>
           </div>
         </div>
-        <p class="demo-note" id="demo-note" hidden>Это пример меню. Настоящие позиции и цены вносятся в файл data/menu.js</p>
       </div>
 
       <!-- само меню свёрнуто: при прокрутке сайта его не видно, открывается кнопкой или пунктом «Меню» -->
@@ -370,17 +369,29 @@
     </button>
   </dialog>
 
-  <!-- Данные (настройки, меню, бар) грузятся с меткой минуты: правки из админки и робота меню
-       видны сразу после публикации, браузер не подсунет старую копию из памяти. -->
+  <!-- Данные (настройки и меню) грузятся с меткой минуты: правки из админки и робота меню
+       видны сразу после публикации, браузер не подсунет старую копию из памяти.
+       ?preview — предпросмотр из админки: несохранённые правки берутся из памяти браузера. -->
   <script>
     (function () {
+      if (/[?&]preview\b/.test(location.search)) {
+        try {
+          var draft = JSON.parse(localStorage.getItem("bunker-preview"));
+          if (draft && draft.site && draft.menu) {
+            window.SITE = draft.site;
+            window.MENU = draft.menu;
+            window.PREVIEW = true;
+            return;
+          }
+        } catch (e) { /* черновика нет — показываем сайт как есть */ }
+      }
       var t = Math.floor(Date.now() / 60000);
-      ["data/site.js", "data/menu.js", "data/bar.js"].forEach(function (src) {
+      ["data/site.js", "data/menu.js"].forEach(function (src) {
         document.write('<script src="' + src + "?t=" + t + '"><\/script>');
       });
     })();
   </script>
   <script src="assets/js/vendor/qrcode.min.js"></script>
-  <script src="assets/js/main.js?v=7"></script>
+  <script src="assets/js/main.js?v=8"></script>
 </body>
 </html>

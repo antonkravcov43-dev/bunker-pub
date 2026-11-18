@@ -1,7 +1,7 @@
 /* Админка «Бункер Паб».
 
-   Читает data/site.js и data/bar.js прямо из репозитория GitHub и сохраняет
-   их обратно одним коммитом (вместе с новыми фото зала). После сохранения
+   Читает data/site.js и data/menu.js прямо из репозитория GitHub и сохраняет
+   их обратно одним коммитом (вместе с новыми фото зала и блюд). После сохранения
    GitHub сам публикует сайт за 1–2 минуты.
 
    Вход — по ключу доступа GitHub (fine-grained personal access token)
@@ -18,14 +18,13 @@
 
   var TOKEN_KEY = "bunker-admin-token";
   var SITE_FILE = "data/site.js";
-  var BAR_FILE = "data/bar.js";
-  var BAR_HEAD = "// Барное меню: то, чего нет в Яндекс Еде (разливное пиво, коктейли и т.п.).\n" +
-    "// Выводится в конце меню на сайте. Удобнее всего менять через админку: /admin.html\n";
+  var MENU_FILE = "data/menu.js";
+  var PREVIEW_KEY = "bunker-preview";
 
   var token = load(TOKEN_KEY);
-  var state = { site: null, bar: [] };
-  var saved = { site: "", bar: "" };   // как было при загрузке/последнем сохранении
-  var heads = { site: "", bar: BAR_HEAD };
+  var state = { site: null, menu: [] };
+  var saved = { site: "", menu: "" };  // как было при загрузке/последнем сохранении
+  var heads = { site: "", menu: "" };
   var newPhotos = {};                    // путь в репозитории -> { b64, url }
   var saving = false;
 
@@ -95,13 +94,14 @@
       .catch(function (e) { if (e.status === 404) return null; throw e; });
   }
 
-  // files: [{ path, b64 }] — b64 === null значит удалить файл
+  // files: [{ path, b64 }] — b64 === null значит удалить файл; пустой список — коммит без изменений
   function commit(files, message, retry) {
     var head;
     return gh("GET", repoPath + "/git/ref/heads/" + REPO.branch).then(function (ref) {
       head = ref.object.sha;
       return gh("GET", repoPath + "/git/commits/" + head);
     }).then(function (c) {
+      if (!files.length) return c.tree;
       return Promise.all(files.map(function (f) {
         if (f.b64 === null) return { path: f.path, mode: "100644", type: "blob", sha: null };
         return gh("POST", repoPath + "/git/blobs", { content: f.b64, encoding: "base64" })
@@ -145,18 +145,17 @@
     var btn = $("button[type=submit]", loginForm);
     btn.disabled = true;
     btn.textContent = "Загружаю…";
-    return Promise.all([readFile(SITE_FILE), readFile(BAR_FILE)]).then(function (res) {
+    return Promise.all([readFile(SITE_FILE), readFile(MENU_FILE)]).then(function (res) {
       if (!res[0]) throw new Error("не найден " + SITE_FILE);
+      if (!res[1]) throw new Error("не найден " + MENU_FILE);
       var site = parseAssign(res[0], "SITE");
       heads.site = site.head;
       state.site = site.value;
-      if (res[1]) {
-        var bar = parseAssign(res[1], "BAR_MENU");
-        heads.bar = bar.head;
-        state.bar = bar.value;
-      }
+      var menu = parseAssign(res[1], "MENU");
+      heads.menu = menu.head;
+      state.menu = menu.value;
       saved.site = JSON.stringify(state.site);
-      saved.bar = JSON.stringify(state.bar);
+      saved.menu = JSON.stringify(state.menu);
       $("#login").hidden = true;
       $("#app").hidden = false;
       $("#savebar").hidden = false;
@@ -266,7 +265,7 @@
         field("Пояснение (необязательно)", el("textarea", { class: "inp", rows: "2", maxlength: "160", text: p.text || "",
           oninput: function (e) { p.text = e.target.value; changed(); } })),
         el("div", { class: "adm-card__foot" }, [
-          el("div", { class: "bar-row__tools" }, [
+          el("div", { class: "tools-row" }, [
             iconBtn("Выше", "↑", function () { if (move(list, i, -1)) { renderPromos(); changed(); } }),
             iconBtn("Ниже", "↓", function () { if (move(list, i, 1)) { renderPromos(); changed(); } })
           ]),
@@ -334,62 +333,300 @@
     return b;
   }
 
-  function renderBar() {
-    var box = $("#bar");
-    box.textContent = "";
-    if (!state.bar.length) box.appendChild(el("p", { class: "adm-hint", text: "Барного меню пока нет. Добавьте раздел, например «Разливное пиво»." }));
-    state.bar.forEach(function (sec, si) {
-      sec.items = sec.items || [];
-      var rows = el("div", { class: "bar-rows" });
-      sec.items.forEach(function (it, ii) {
-        rows.appendChild(el("div", { class: "bar-row" }, [
-          el("input", { class: "inp bar-row__name", type: "text", placeholder: "Название", value: it.name || "", maxlength: "80",
-            oninput: function (e) { it.name = e.target.value; changed(); } }),
-          el("input", { class: "inp bar-row__weight", type: "text", placeholder: "0,5 л", value: it.weight || "", maxlength: "20",
-            oninput: function (e) { it.weight = e.target.value; changed(); } }),
-          el("input", { class: "inp bar-row__price", type: "text", inputmode: "numeric", placeholder: "Цена ₽",
-            value: it.price == null ? "" : it.price, maxlength: "7",
-            oninput: function (e) {
-              var v = e.target.value.replace(/[^\d]/g, "");
-              if (v !== e.target.value) e.target.value = v;
-              if (v) it.price = Number(v); else delete it.price;
-              changed();
-            } }),
-          el("div", { class: "bar-row__tools" }, [
-            iconBtn("Выше", "↑", function () { if (move(sec.items, ii, -1)) { renderBar(); changed(); } }),
-            iconBtn("Ниже", "↓", function () { if (move(sec.items, ii, 1)) { renderBar(); changed(); } }),
-            iconBtn("Удалить позицию", "×", function () { sec.items.splice(ii, 1); renderBar(); changed(); })
-          ])
-        ]));
-      });
+  /* ---------- меню: разделы и позиции ---------- */
+  var BADGES = ["Новинка", "Хит", "Сезонное"];
+  var openCats = new Set();   // раскрытые разделы
+  var menuQuery = "";
+  var uploads = 0;
+  var dlg = $("#item-dialog");
 
-      box.appendChild(el("div", { class: "adm-card" }, [
-        el("div", { class: "adm-card__head" }, [
-          el("input", { class: "inp adm-card__title", type: "text", placeholder: "Название раздела", value: sec.category || "", maxlength: "40",
-            oninput: function (e) { sec.category = e.target.value; changed(); } }),
-          iconBtn("Раздел выше", "↑", function () { if (move(state.bar, si, -1)) { renderBar(); changed(); } }),
-          iconBtn("Раздел ниже", "↓", function () { if (move(state.bar, si, 1)) { renderBar(); changed(); } })
-        ]),
-        rows,
-        el("div", { class: "adm-card__foot" }, [
-          el("button", { type: "button", class: "btn btn--steel", text: "Добавить позицию", onclick: function () {
-            sec.items.push({ name: "", weight: "" });
-            renderBar();
-            changed();
-            var names = $$(".bar-row__name", $$("#bar .adm-card")[si]);
-            names[names.length - 1].focus();
-          } }),
-          dangerBtn("Удалить раздел", function () { state.bar.splice(si, 1); renderBar(); changed(); })
-        ])
-      ]));
-    });
+  function srcOf(path) { return path && newPhotos[path] ? newPhotos[path].url : path; }
+  function priceText(p) { return typeof p === "number" ? p.toLocaleString("ru-RU") + " ₽" : ""; }
+  function plural(n, one, few, many) {
+    var a = n % 10, b = n % 100;
+    return n + " " + (a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? few : many);
   }
-  $("#bar-add").addEventListener("click", function () {
-    state.bar.push({ category: "", items: [{ name: "", weight: "" }] });
-    renderBar();
+  function check(label, on, fn) {
+    var input = el("input", { type: "checkbox", onchange: function () { fn(input.checked); } });
+    input.checked = !!on;
+    return el("label", { class: "chk" }, [input, el("span", { text: label })]);
+  }
+  function catOf(it) {
+    for (var i = 0; i < state.menu.length; i++) if (state.menu[i].items.indexOf(it) >= 0) return state.menu[i];
+    return null;
+  }
+  // удалённое в админке блюдо из Яндекс Еды робот не должен добавить обратно
+  function ignoreEda(id) {
+    var list = state.site.menuIgnore || (state.site.menuIgnore = []);
+    if (list.indexOf(id) < 0) list.push(id);
+  }
+  function menuPhotos(menu) {
+    var out = [];
+    menu.forEach(function (c) {
+      (c.items || []).forEach(function (it) { if (it.photo) out.push(it.photo); if (it.thumb) out.push(it.thumb); });
+    });
+    return out;
+  }
+
+  function itemRow(cat, it) {
+    var thumb = srcOf(it.thumb || it.photo);
+    var meta = [it.weight, priceText(it.price)].filter(Boolean).join(" · ");
+    var tags = [];
+    if (it.badge) tags.push(el("span", { class: "mi-tag", text: it.badge }));
+    if (it.hidden) tags.push(el("span", { class: "mi-tag mi-tag--off", text: it.gone ? "Нет в Яндекс Еде" : "Скрыто" }));
+    return el("div", { class: "mi" + (it.hidden ? " is-off" : "") }, [
+      el("button", { type: "button", class: "mi-main", onclick: function () { openItem(it); } }, [
+        thumb ? el("img", { class: "mi-thumb", src: thumb, alt: "", loading: "lazy" })
+              : el("span", { class: "mi-thumb mi-thumb--none", text: "без фото" }),
+        el("span", { class: "mi-body" }, [
+          el("span", { class: "mi-name", text: it.name || "Без названия" }),
+          el("span", { class: "mi-meta" }, [meta ? el("span", { text: meta }) : null].concat(tags))
+        ])
+      ]),
+      el("div", { class: "mi-tools" }, [
+        iconBtn("Выше", "↑", function () { if (move(cat.items, cat.items.indexOf(it), -1)) { renderMenu(); changed(); } }),
+        iconBtn("Ниже", "↓", function () { if (move(cat.items, cat.items.indexOf(it), 1)) { renderMenu(); changed(); } })
+      ])
+    ]);
+  }
+
+  function renderMenu() {
+    var box = $("#menu-cats");
+    var q = menuQuery.trim().toLowerCase();
+    box.textContent = "";
+    if (!state.menu.length) box.appendChild(el("p", { class: "adm-hint", text: "В меню пока нет разделов." }));
+    state.menu.forEach(function (cat, ci) {
+      cat.items = cat.items || [];
+      var catHit = q && String(cat.category || "").toLowerCase().indexOf(q) >= 0;
+      var items = q && !catHit
+        ? cat.items.filter(function (it) { return String(it.name || "").toLowerCase().indexOf(q) >= 0; })
+        : cat.items;
+      if (q && !catHit && !items.length) return;
+      var open = !!q || openCats.has(cat);
+      var off = cat.items.filter(function (it) { return it.hidden; }).length;
+      var name = el("span", { class: "mc-name", text: cat.category || "Без названия" });
+      var card = el("div", { class: "adm-card mc" + (cat.hidden ? " is-off" : "") }, [
+        el("div", { class: "mc-head" }, [
+          el("button", { type: "button", class: "mc-toggle", "aria-expanded": String(open), onclick: function () {
+            if (openCats.has(cat)) openCats.delete(cat); else openCats.add(cat);
+            renderMenu();
+          } }, [
+            name,
+            el("span", { class: "mc-count", text: plural(cat.items.length, "позиция", "позиции", "позиций") +
+              (off ? ", скрыто " + off : "") + (cat.hidden ? " · раздел скрыт" : "") })
+          ]),
+          iconBtn("Раздел выше", "↑", function () { if (move(state.menu, ci, -1)) { renderMenu(); changed(); } }),
+          iconBtn("Раздел ниже", "↓", function () { if (move(state.menu, ci, 1)) { renderMenu(); changed(); } })
+        ])
+      ]);
+      if (open) {
+        card.appendChild(field("Название раздела", el("input", { class: "inp mc-title", type: "text", value: cat.category || "", maxlength: "40",
+          oninput: function (e) { cat.category = e.target.value; name.textContent = cat.category || "Без названия"; changed(); } })));
+        card.appendChild(check("Скрыть весь раздел с сайта", cat.hidden, function (on) {
+          if (on) cat.hidden = true; else delete cat.hidden;
+          renderMenu();
+          changed();
+        }));
+        var list = el("div", { class: "mi-list" });
+        items.forEach(function (it) { list.appendChild(itemRow(cat, it)); });
+        if (!cat.items.length) list.appendChild(el("p", { class: "adm-hint", text: "В разделе пока нет позиций." }));
+        card.appendChild(list);
+        card.appendChild(el("div", { class: "adm-card__foot" }, [
+          el("button", { type: "button", class: "btn btn--steel", text: "Добавить позицию", onclick: function () {
+            var it = { name: "" };
+            cat.items.push(it);
+            renderMenu();
+            changed();
+            openItem(it);
+          } }),
+          dangerBtn("Удалить раздел", function () {
+            cat.items.forEach(function (it) { if (it.eda) ignoreEda(it.eda); });
+            state.menu.splice(state.menu.indexOf(cat), 1);
+            renderMenu();
+            changed();
+          })
+        ]));
+      }
+      box.appendChild(card);
+    });
+
+    var ignored = (state.site.menuIgnore || []).length;
+    var note = $("#menu-ignored");
+    note.hidden = !ignored;
+    note.textContent = "";
+    if (ignored) {
+      note.appendChild(document.createTextNode("Удалено блюд из Яндекс Еды: " + ignored + ". Робот не возвращает их на сайт. "));
+      note.appendChild(el("button", { type: "button", class: "link-btn", text: "Вернуть при следующей сверке", onclick: function () {
+        state.site.menuIgnore = [];
+        renderMenu();
+        changed();
+      } }));
+    }
+  }
+
+  // карточка позиции: все правки сразу попадают в данные, «Сохранить» — внизу экрана
+  function openItem(it) {
+    var box = $("#item-box");
+    box.textContent = "";
+    var syncInput = null;
+    var hint = el("p", { class: "adm-hint item-hint", text: it.gone ? "Этого блюда сейчас нет в Яндекс Еде, поэтому оно скрыто. Вернётся в Яндекс Еду — снова появится на сайте." : "" });
+    function touch() { renderMenu(); changed(); }
+    // правка цены, веса или фото у блюда из Яндекс Еды: дальше его ведёт админка, робот это не перезапишет
+    function takeOver() {
+      if (!it.eda || it.manual) return;
+      it.manual = true;
+      if (syncInput) syncInput.checked = false;
+      hint.textContent = "Блюдо изменено вручную: робот больше не обновляет его цену, вес и фото из Яндекс Еды.";
+    }
+
+    var img = el("img", { class: "item-photo__img", alt: "" });
+    var none = el("div", { class: "item-photo__none", text: "Без фото — на сайте позиция будет строкой" });
+    var pickText = el("span");
+    var delPhoto = el("button", { type: "button", class: "btn btn--steel", text: "Убрать фото", onclick: function () {
+      delete it.photo;
+      delete it.thumb;
+      takeOver();
+      showPhoto();
+      touch();
+    } });
+    function showPhoto() {
+      var s = srcOf(it.photo);
+      img.hidden = !s;
+      none.hidden = !!s;
+      delPhoto.hidden = !s;
+      pickText.textContent = s ? "Заменить фото" : "Добавить фото";
+      if (s) img.src = s;
+    }
+    var file = el("input", { type: "file", accept: "image/*", onchange: function (e) {
+      var f = e.target.files && e.target.files[0];
+      e.target.value = "";
+      if (!f) return;
+      setStatus("Готовлю фото…");
+      var name = "u-" + new Date().toISOString().replace(/\D/g, "").slice(0, 14) + "-" + (++uploads) + ".jpg";
+      var photo = "images/menu/" + name, thumb = "images/menu/thumb/" + name;
+      Promise.all([resizeImage(f, 1000, 0.8), resizeImage(f, 480, 0.76)]).then(function (blobs) {
+        return Promise.all(blobs.map(blobToB64)).then(function (b64) {
+          newPhotos[photo] = { b64: b64[0], url: URL.createObjectURL(blobs[0]) };
+          newPhotos[thumb] = { b64: b64[1], url: URL.createObjectURL(blobs[1]) };
+          it.photo = photo;
+          it.thumb = thumb;
+          takeOver();
+          showPhoto();
+          touch();
+        });
+      }).catch(function (err) { setStatus("Не получилось добавить фото: " + err.message, true); });
+    } });
+
+    var nameInput = el("input", { class: "inp", type: "text", value: it.name || "", maxlength: "80", placeholder: "Бургер Секач",
+      oninput: function (e) { it.name = e.target.value; touch(); } });
+    var weight = el("input", { class: "inp", type: "text", value: it.weight || "", maxlength: "20", placeholder: "320 г или 0,5 л",
+      oninput: function (e) { it.weight = e.target.value; takeOver(); touch(); } });
+    var price = el("input", { class: "inp", type: "text", inputmode: "numeric", maxlength: "7", value: it.price == null ? "" : it.price,
+      oninput: function (e) {
+        var v = e.target.value.replace(/[^\d]/g, "");
+        if (v !== e.target.value) e.target.value = v;
+        if (v) it.price = Number(v); else delete it.price;
+        takeOver();
+        touch();
+      } });
+
+    var seg = el("div", { class: "seg", role: "group", "aria-label": "Отметка" });
+    function renderSeg() {
+      seg.textContent = "";
+      [""].concat(BADGES).forEach(function (b) {
+        seg.appendChild(el("button", { type: "button", class: "seg__btn", "aria-pressed": String((it.badge || "") === b), text: b || "Нет",
+          onclick: function () { if (b) it.badge = b; else delete it.badge; renderSeg(); touch(); } }));
+      });
+    }
+    renderSeg();
+
+    var sel = el("select", { class: "inp", onchange: function () {
+      var from = catOf(it), to = state.menu[Number(sel.value)];
+      if (!from || !to || from === to) return;
+      from.items.splice(from.items.indexOf(it), 1);
+      to.items.push(it);
+      openCats.add(to);
+      touch();
+    } });
+    state.menu.forEach(function (c, i) {
+      var o = el("option", { value: String(i), text: c.category || "Без названия" });
+      if (c === catOf(it)) o.selected = true;
+      sel.appendChild(o);
+    });
+
+    var syncRow = null;
+    if (it.eda) {
+      syncRow = check("Обновлять цену, вес и фото из Яндекс Еды", !it.manual, function (on) {
+        if (on) delete it.manual; else it.manual = true;
+        hint.textContent = "";
+        touch();
+      });
+      syncInput = $("input", syncRow);
+    }
+
+    box.appendChild(el("div", { class: "adm-dialog__head" }, [
+      el("h2", { class: "adm-h", id: "item-title", text: it.name ? "Позиция" : "Новая позиция" }),
+      iconBtn("Закрыть", "×", function () { dlg.close(); })
+    ]));
+    box.appendChild(el("div", { class: "item-photo" }, [img, none, el("div", { class: "item-photo__btns" }, [
+      el("label", { class: "btn btn--steel adm-file" }, [file, pickText]),
+      delPhoto
+    ])]));
+    box.appendChild(field("Название", nameInput));
+    box.appendChild(el("div", { class: "row2" }, [field("Вес или объём", weight), field("Цена, ₽", price)]));
+    box.appendChild(field("Описание (необязательно)", el("textarea", { class: "inp", rows: "2", maxlength: "200", text: it.note || "",
+      placeholder: "Коротко и по делу: например, «30 см» или «на компанию из 4 человек»",
+      oninput: function (e) { it.note = e.target.value; touch(); } })));
+    box.appendChild(el("div", { class: "fld" }, [el("span", { text: "Отметка на карточке" }), seg]));
+    box.appendChild(field("Раздел", sel));
+    box.appendChild(check("Скрыть с сайта — например, если временно нет в наличии", it.hidden, function (on) {
+      if (on) it.hidden = true; else { delete it.hidden; delete it.gone; }
+      touch();
+    }));
+    if (syncRow) box.appendChild(syncRow);
+    box.appendChild(hint);
+    box.appendChild(el("div", { class: "adm-dialog__foot" }, [
+      el("button", { type: "button", class: "btn btn--red", text: "Готово", onclick: function () { dlg.close(); } }),
+      dangerBtn("Удалить позицию", function () {
+        var c = catOf(it);
+        if (it.eda) ignoreEda(it.eda);
+        if (c) c.items.splice(c.items.indexOf(it), 1);
+        dlg.close();
+        touch();
+      })
+    ]));
+    showPhoto();
+    if (!dlg.open) dlg.showModal();
+    box.scrollTop = 0;
+    if (!it.name) nameInput.focus();
+  }
+  dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+
+  $("#menu-search").addEventListener("input", function (e) { menuQuery = e.target.value; renderMenu(); });
+  $("#cat-add").addEventListener("click", function () {
+    var cat = { category: "", items: [] };
+    state.menu.push(cat);
+    openCats.add(cat);
+    menuQuery = "";
+    $("#menu-search").value = "";
+    renderMenu();
     changed();
-    var titles = $$(".adm-card__title");
-    if (titles.length) titles[titles.length - 1].focus();
+    var titles = $$("#menu-cats .mc-title");
+    titles[titles.length - 1].focus();
+  });
+  $("#menu-sync").addEventListener("change", function (e) { state.site.menuSync = e.target.checked; changed(); });
+  // пустой коммит с пометкой [menu] запускает робота (.github/workflows/pages.yml)
+  $("#menu-robot").addEventListener("click", function () {
+    var b = $("#menu-robot");
+    if (isDirty()) { setStatus("Сначала сохраните изменения, потом запускайте сверку.", true); return; }
+    b.disabled = true;
+    setStatus("Запускаю сверку…");
+    commit([], "Сверить меню с Яндекс Едой [menu]").then(function () {
+      setStatus("Сверка запущена: через 2–3 минуты меню на сайте обновится. Чтобы увидеть изменения здесь, обновите страницу админки.");
+    }).catch(function (e) {
+      b.disabled = false;
+      setStatus("Не получилось запустить сверку: " + e.message, true);
+    });
   });
 
   /* ---------- фото зала ---------- */
@@ -470,7 +707,7 @@
   var statusEl = $("#status");
 
   function isDirty() {
-    return state.site && (JSON.stringify(state.site) !== saved.site || JSON.stringify(state.bar) !== saved.bar);
+    return state.site && (JSON.stringify(state.site) !== saved.site || JSON.stringify(state.menu) !== saved.menu);
   }
   function setStatus(text, isError) {
     statusEl.textContent = text;
@@ -493,9 +730,9 @@
     for (var k = 0; k < promos.length; k++) {
       if (!String(promos[k].title || "").trim()) return "У акции нет названия: заполните его или удалите акцию.";
     }
-    for (var i = 0; i < state.bar.length; i++) {
-      var sec = state.bar[i];
-      if (!String(sec.category || "").trim()) return "У раздела барного меню нет названия.";
+    for (var i = 0; i < state.menu.length; i++) {
+      var sec = state.menu[i];
+      if (!String(sec.category || "").trim()) return "У раздела меню нет названия.";
       for (var j = 0; j < sec.items.length; j++) {
         if (!String(sec.items[j].name || "").trim()) return "В разделе «" + sec.category + "» есть позиция без названия.";
       }
@@ -503,17 +740,17 @@
     return "";
   }
 
-  function cleanBar() {
-    return state.bar.map(function (sec) {
-      return {
-        category: sec.category.trim(),
-        items: sec.items.map(function (it) {
-          var o = { name: it.name.trim() };
-          if (String(it.weight || "").trim()) o.weight = it.weight.trim();
-          if (typeof it.price === "number") o.price = it.price;
-          return o;
-        })
-      };
+  // лишние пробелы и пустые необязательные поля убираем прямо в данных
+  function cleanMenu() {
+    state.menu.forEach(function (sec) {
+      sec.category = String(sec.category || "").trim();
+      sec.items.forEach(function (it) {
+        ["name", "weight", "note"].forEach(function (k) {
+          if (it[k] == null) return;
+          it[k] = String(it[k]).trim();
+          if (!it[k] && k !== "name") delete it[k];
+        });
+      });
     });
   }
 
@@ -521,37 +758,44 @@
     var problem = validate();
     if (problem) { setStatus(problem, true); return; }
 
+    cleanMenu();
     var files = [];
     var site = state.site;
     if (JSON.stringify(site) !== saved.site) {
       files.push({ path: SITE_FILE, b64: toB64(heads.site + "window.SITE = " + JSON.stringify(site, null, 2) + ";\n") });
     }
-    var bar = cleanBar();
-    if (JSON.stringify(state.bar) !== saved.bar) {
-      files.push({ path: BAR_FILE, b64: toB64(heads.bar + "window.BAR_MENU = " + JSON.stringify(bar, null, 2) + ";\n") });
+    if (JSON.stringify(state.menu) !== saved.menu) {
+      files.push({ path: MENU_FILE, b64: toB64(heads.menu + "window.MENU = " + JSON.stringify(state.menu, null, 2) + ";\n") });
     }
-    // новые фото, которые остались в списке
-    var now = site.gallery.map(function (g) { return g.photo; });
-    now.forEach(function (p) { if (newPhotos[p]) files.push({ path: p, b64: newPhotos[p].b64 }); });
-    // фото зала, которые убрали из списка, удаляем из репозитория
-    JSON.parse(saved.site).gallery.forEach(function (g) {
-      if (now.indexOf(g.photo) < 0 && g.photo.indexOf("images/gallery/") === 0) files.push({ path: g.photo, b64: null });
+    // новые фото зала и блюд, которые остались в данных и ещё не отправлены
+    var now = site.gallery.map(function (g) { return g.photo; }).concat(menuPhotos(state.menu));
+    var listed = {};
+    Object.keys(newPhotos).forEach(function (p) {
+      if (now.indexOf(p) >= 0 && !newPhotos[p].sent && !listed[p]) { listed[p] = 1; files.push({ path: p, b64: newPhotos[p].b64 }); }
     });
+    // убранные фото удаляем из репозитория: фото зала и загруженные в админке фото блюд
+    // (фото из Яндекс Еды убирает сам робот, когда на них больше ничего не ссылается)
+    JSON.parse(saved.site).gallery.map(function (g) { return g.photo; })
+      .filter(function (p) { return p.indexOf("images/gallery/") === 0; })
+      .concat(menuPhotos(JSON.parse(saved.menu)).filter(function (p) { return /^images\/menu\/(thumb\/)?u-/.test(p); }))
+      .forEach(function (p) {
+        if (now.indexOf(p) < 0 && !listed[p]) { listed[p] = 1; files.push({ path: p, b64: null }); }
+      });
     if (!files.length) return;
 
     saving = true;
     saveBtn.disabled = true;
     setStatus("Сохраняю…");
     commit(files, "Изменения из админки").then(function () {
-      state.bar = bar;
       saved.site = JSON.stringify(state.site);
-      saved.bar = JSON.stringify(state.bar);
+      saved.menu = JSON.stringify(state.menu);
       newPhotos = Object.keys(newPhotos).reduce(function (o, p) {
-        if (now.indexOf(p) >= 0) o[p] = newPhotos[p];   // превью нужно, пока сайт не обновился
+        // превью нужно, пока сайт не обновился; повторно не отправляем
+        if (now.indexOf(p) >= 0) { o[p] = newPhotos[p]; o[p].sent = true; }
         return o;
       }, {});
       saving = false;
-      renderBar();
+      renderMenu();
       changed();
       setStatus("Сохранено. На сайте появится через 1–2 минуты.");
     }).catch(function (e) {
@@ -566,12 +810,39 @@
     if (isDirty()) { e.preventDefault(); e.returnValue = ""; }
   });
 
+  /* ---------- предпросмотр: сайт с несохранёнными правками в окне поверх админки ---------- */
+  var previewDlg = $("#preview-dialog");
+  var previewFrame = $("#preview-frame");
+  $("#preview-close").addEventListener("click", function () { previewDlg.close(); });
+  previewDlg.addEventListener("close", function () { previewFrame.src = "about:blank"; });
+  $("#preview").addEventListener("click", function () {
+    var site = JSON.parse(JSON.stringify(state.site));
+    var menu = JSON.parse(JSON.stringify(state.menu));
+    // новые фото ещё не на сайте: показываем их из памяти браузера
+    (site.gallery || []).forEach(function (g) { g.photo = srcOf(g.photo); });
+    menu.forEach(function (c) {
+      (c.items || []).forEach(function (it) {
+        if (it.photo) it.photo = srcOf(it.photo);
+        if (it.thumb) it.thumb = srcOf(it.thumb);
+      });
+    });
+    try {
+      localStorage.setItem(PREVIEW_KEY, JSON.stringify({ site: site, menu: menu }));
+    } catch (e) {
+      setStatus("Не получилось открыть предпросмотр: в браузере не хватило места.", true);
+      return;
+    }
+    previewFrame.src = "./?preview&t=" + Date.now();
+    previewDlg.showModal();
+  });
+
   function renderAll() {
     fillInputs();
+    $("#menu-sync").checked = state.site.menuSync !== false;
     renderNoticePreview();
     renderPromos();
     renderLeagues();
-    renderBar();
+    renderMenu();
     renderPhotos();
     changed();
   }

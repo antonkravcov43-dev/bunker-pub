@@ -1,11 +1,11 @@
 /* Бункер Паб — поведение страницы.
-   Данные берутся из data/site.js, data/menu.js и data/bar.js, здесь их править не нужно. */
+   Данные берутся из data/site.js и data/menu.js (правятся в админке), здесь их править не нужно. */
 (function () {
   "use strict";
 
   var S = window.SITE || {};
-  // меню из Яндекс Еды, а за ним барное меню из админки
-  var MENU = (window.MENU || []).concat(window.BAR_MENU || []);
+  // меню из админки (блюда из Яндекс Еды робот сверяет каждое утро); скрытые разделы не показываем
+  var MENU = (window.MENU || []).filter(function (c) { return !c.hidden; });
   var PLACEHOLDER = "images/menu/placeholder.svg";
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -26,6 +26,22 @@
   }
   function fallbackImage(img, src) {
     img.addEventListener("error", function () { img.src = src; }, { once: true });
+  }
+  // фото блюда: сначала лёгкая копия для карточки, если её нет — полное фото, потом заглушка
+  function setPhoto(img, srcs) {
+    srcs = srcs.filter(Boolean).concat(PLACEHOLDER);
+    var i = 0;
+    img.addEventListener("error", function next() {
+      if (++i < srcs.length) img.src = srcs[i];
+      else img.removeEventListener("error", next);
+    });
+    img.src = srcs[0];
+  }
+
+  /* ---------- Предпросмотр из админки ---------- */
+  if (window.PREVIEW) {
+    document.body.appendChild(el("div", "preview-bar", "Предпросмотр: так сайт будет выглядеть после сохранения. Изменения ещё не опубликованы."));
+    document.title = "Предпросмотр — " + document.title;
   }
 
   /* ---------- Контакты и тексты из data/site.js ---------- */
@@ -206,9 +222,6 @@
   var sections = [];
   var chips = [];
 
-  var demo = $("#demo-note");
-  if (demo) demo.hidden = !window.MENU_DEMO;
-
   function addCat(sec, label) {
     sections.push(sec);
     var chip = el("button", "cat-btn", label);
@@ -221,7 +234,8 @@
   }
 
   MENU.forEach(function (cat, ci) {
-    var items = cat.items || [];
+    // скрытые в админке позиции (нет в наличии) не показываем
+    var items = (cat.items || []).filter(function (it) { return it.name && !it.hidden; });
     if (!items.length) return;
     var id = "cat-" + (ci + 1);
 
@@ -242,16 +256,16 @@
         var li = el("li");
         var btn = el("button", "dish");
         btn.type = "button";
-        btn.setAttribute("aria-label", it.name + ", " + (it.weight ? it.weight + ", " : "") + price(it.price) + ". Открыть фото");
+        btn.setAttribute("aria-label", (it.badge ? it.badge + ": " : "") + it.name + ", " + (it.weight ? it.weight + ", " : "") + price(it.price) + ". Открыть фото");
 
         var ph = el("span", "dish__photo");
         var img = el("img");
         img.alt = "";
         img.loading = "lazy";
         img.decoding = "async";
-        fallbackImage(img, PLACEHOLDER);
-        img.src = it.photo;
+        setPhoto(img, [it.thumb, it.photo]);
         ph.appendChild(img);
+        if (it.badge) ph.appendChild(el("span", "dish__badge", it.badge));
 
         var body = el("span", "dish__body");
         body.appendChild(el("span", "dish__name", it.name));
@@ -274,7 +288,9 @@
       var rows = el("ul", "rows");
       noPhoto.forEach(function (it) {
         var li = el("li", "row");
-        li.appendChild(el("span", "row__name", it.name));
+        var name = el("span", "row__name", it.name);
+        if (it.badge) name.appendChild(el("span", "row__badge", it.badge));
+        li.appendChild(name);
         li.appendChild(el("span", "row__weight", it.weight || ""));
         li.appendChild(el("span", "row__price", price(it.price)));
         rows.appendChild(li);
@@ -350,7 +366,18 @@
   $$('a[href="#menu"]').forEach(function (a) {
     a.addEventListener("click", function () { setMenu(true); });
   });
-  if (location.hash === "#menu") setMenu(true);
+  // ссылка …/menu/ с QR-кода на столах ведёт сюда: сразу открываем меню и встаём на него
+  // (и ещё раз после загрузки шрифтов, если гость сам ещё не начал листать)
+  if (location.hash === "#menu") {
+    setMenu(true);
+    var toMenu = function () { $("#menu").scrollIntoView({ behavior: "instant", block: "start" }); };
+    var touched = false;
+    ["wheel", "touchstart", "keydown"].forEach(function (ev) {
+      window.addEventListener(ev, function () { touched = true; }, { once: true, passive: true });
+    });
+    toMenu();
+    window.addEventListener("load", function () { if (!touched) toMenu(); }, { once: true });
+  }
 
   /* ---------- Зал ---------- */
   var gallery = $("#gallery");
