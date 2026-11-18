@@ -9,8 +9,8 @@
   <title>Админка — Бункер Паб</title>
   <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-  <link rel="stylesheet" href="assets/css/style.css?v=10">
-  <link rel="stylesheet" href="assets/css/admin.css?v=4">
+  <link rel="stylesheet" href="assets/css/style.css?v=12">
+  <link rel="stylesheet" href="assets/css/admin.css?v=6">
 </head>
 <body class="adm">
   <header class="adm-bar">
@@ -42,6 +42,7 @@
         <button class="cat-btn" type="button" data-tab="menu">Меню</button>
         <button class="cat-btn" type="button" data-tab="notice">Объявление</button>
         <button class="cat-btn" type="button" data-tab="promos">Акции</button>
+        <button class="cat-btn" type="button" data-tab="afisha">Афиша</button>
         <button class="cat-btn" type="button" data-tab="broadcast">Трансляции</button>
         <button class="cat-btn" type="button" data-tab="events">Банкет</button>
         <button class="cat-btn" type="button" data-tab="gallery">Фото зала</button>
@@ -102,6 +103,13 @@
         <button class="btn btn--steel" type="button" id="promo-add">Добавить акцию</button>
         <label class="fld adm-gap"><span>Строка под акциями, рядом с кнопками Telegram и ВК</span>
           <input class="inp" data-bind="promosNote" type="text" maxlength="140"></label>
+      </section>
+
+      <section class="adm-panel" data-panel="afisha" hidden>
+        <h2 class="adm-h">Афиша</h2>
+        <p class="adm-hint">Ближайшие матчи, вечеринки, квизы — блок «Афиша» под трансляциями. На сайте события встают по дате, «Сегодня» и «Завтра» подписываются сами, прошедшие исчезают на следующий день. Нет событий — раздела на сайте не видно.</p>
+        <div id="events-list"></div>
+        <button class="btn btn--steel" type="button" id="event-add">Добавить событие</button>
       </section>
 
       <section class="adm-panel" data-panel="broadcast" hidden>
@@ -184,6 +192,6 @@
     <button class="btn btn--red" type="button" id="save" disabled>Сохранить</button>
   </div>
 
-  <script src="assets/js/admin.js?v=5"></script>
+  <script src="assets/js/admin.js?v=6"></script>
 </body>
 </html>

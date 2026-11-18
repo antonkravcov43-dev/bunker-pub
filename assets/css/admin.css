@@ -34,7 +34,7 @@
 .adm-bar__link:hover { color: var(--white); }
 
 .adm-main {
-  max-width: 880px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 24px 16px 140px;
 }
@@ -426,6 +426,23 @@ input[type="time"].inp { color-scheme: dark; }
   cursor: pointer;
 }
 .seg__btn[aria-pressed="true"] { border-color: var(--oxide-hi); background: var(--oxide); }
+
+/* карточки афиши */
+.event-card { display: grid; gap: 0; }
+.event-card .fld { margin-bottom: 12px; }
+.event-card__img {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin-bottom: 10px;
+  background: var(--steel);
+}
+.event-card__img[hidden] { display: none; }
+.event-card .item-photo__btns { max-width: 360px; margin-bottom: 12px; }
+.event-card.is-off { opacity: .6; }
+.event-card__past { margin: 0 0 8px; }
 
 /* QR-код меню */
 .qr-menu {

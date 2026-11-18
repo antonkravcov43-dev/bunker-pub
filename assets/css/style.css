@@ -318,7 +318,7 @@ a { color: inherit; }
 .bar.is-open .bar__burger span:nth-child(2) { opacity: 0; }
 .bar.is-open .bar__burger span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-@media (max-width: 1279px) {
+@media (max-width: 1399px) {
   .bar__phone { display: none; }
 }
 
@@ -660,6 +660,65 @@ a { color: inherit; }
     width: auto;
     padding: 0 14px;
   }
+}
+
+/* ---------- Афиша ---------- */
+.afisha {
+  margin-top: clamp(64px, 8vw, 104px);
+  scroll-margin-top: calc(var(--bar-h) + 24px);
+}
+.events {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+  margin: 0 0 32px;
+  padding: 0;
+  list-style: none;
+}
+.event {
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, .45);
+  --cut: 14px;
+  clip-path: var(--chamfer);
+}
+.event__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--steel);
+}
+.event__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 24px 28px 32px;
+}
+.event__date {
+  margin: 0 0 4px;
+  padding: 8px 12px 7px;
+  background: var(--oxide);
+  font: 700 15px/1 var(--f-display);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  --cut: 6px;
+  clip-path: var(--chamfer);
+}
+.event__title {
+  margin: 0;
+  font: 700 clamp(22px, 2.2vw, 28px)/1.15 var(--f-display);
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.event__text {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--soft);
+}
+@media (max-width: 899px) {
+  .afisha > .btn { width: 100%; }
 }
 
 /* ---------- Меню ---------- */

@@ -291,6 +291,87 @@
     titles[titles.length - 1].focus();
   });
 
+  /* ---------- афиша ---------- */
+  function todayMsk() {
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(new Date()); }
+    catch (e) { return new Date(Date.now() + 3 * 36e5).toISOString().slice(0, 10); }
+  }
+  function isPast(ev, today) { return /^\d{4}-\d{2}-\d{2}$/.test(ev.date || "") && ev.date < today; }
+  function renderAfisha() {
+    var box = $("#events-list");
+    var list = state.site.afisha || [];
+    var today = todayMsk();
+    var past = list.filter(function (ev) { return isPast(ev, today); }).length;
+    box.textContent = "";
+    if (!list.length) box.appendChild(el("p", { class: "adm-hint", text: "Событий пока нет — на сайте блок «Афиша» не показывается." }));
+    list.forEach(function (ev) {
+      var gone = isPast(ev, today);
+      var img = el("img", { class: "event-card__img", alt: "" });
+      var pick = el("span");
+      var delPhoto = el("button", { type: "button", class: "btn btn--steel", text: "Убрать фото", onclick: function () {
+        delete ev.photo;
+        show();
+        changed();
+      } });
+      function show() {
+        var s = srcOf(ev.photo);
+        img.hidden = !s;
+        delPhoto.hidden = !s;
+        pick.textContent = s ? "Заменить фото" : "Добавить фото";
+        if (s) img.src = s;
+      }
+      var file = el("input", { type: "file", accept: "image/*", onchange: function (e) {
+        var f = e.target.files && e.target.files[0];
+        e.target.value = "";
+        if (!f) return;
+        setStatus("Готовлю фото…");
+        var path = "images/afisha/" + new Date().toISOString().replace(/\D/g, "").slice(0, 14) + "-" + (++uploads) + ".jpg";
+        resizeImage(f, 1200, 0.8).then(function (blob) {
+          return blobToB64(blob).then(function (b64) {
+            newPhotos[path] = { b64: b64, url: URL.createObjectURL(blob) };
+            ev.photo = path;
+            show();
+            changed();
+          });
+        }).catch(function (err) { setStatus("Не получилось добавить фото: " + err.message, true); });
+      } });
+      box.appendChild(el("div", { class: "adm-card event-card" + (gone ? " is-off" : "") }, [
+        el("div", { class: "row2" }, [
+          field("Дата", el("input", { class: "inp", type: "date", value: ev.date || "",
+            oninput: function (e) { ev.date = e.target.value; changed(); } })),
+          field("Время (необязательно)", el("input", { class: "inp", type: "time", value: ev.time || "",
+            oninput: function (e) { if (e.target.value) ev.time = e.target.value; else delete ev.time; changed(); } }))
+        ]),
+        field("Название", el("input", { class: "inp event-card__title", type: "text", value: ev.title || "", maxlength: "70",
+          placeholder: "Например: финал Лиги чемпионов", oninput: function (e) { ev.title = e.target.value; changed(); } })),
+        field("Описание (необязательно)", el("textarea", { class: "inp", rows: "2", maxlength: "200", text: ev.text || "",
+          oninput: function (e) { ev.text = e.target.value; changed(); } })),
+        img,
+        el("div", { class: "item-photo__btns" }, [el("label", { class: "btn btn--steel adm-file" }, [file, pick]), delPhoto]),
+        gone ? el("p", { class: "adm-hint event-card__past", text: "Событие прошло — на сайте его уже не видно." }) : null,
+        el("div", { class: "adm-card__foot" }, [
+          el("span"),
+          dangerBtn("Удалить событие", function () { list.splice(list.indexOf(ev), 1); renderAfisha(); changed(); })
+        ])
+      ]));
+      show();
+    });
+    if (past) box.appendChild(el("button", { type: "button", class: "btn btn--steel adm-gap-b", text: "Удалить прошедшие (" + past + ")",
+      onclick: function () {
+        state.site.afisha = list.filter(function (ev) { return !isPast(ev, today); });
+        renderAfisha();
+        changed();
+      } }));
+  }
+  $("#event-add").addEventListener("click", function () {
+    if (!state.site.afisha) state.site.afisha = [];
+    state.site.afisha.push({ date: todayMsk(), title: "" });
+    renderAfisha();
+    changed();
+    var titles = $$("#events-list .event-card__title");
+    titles[titles.length - 1].focus();
+  });
+
   /* ---------- трансляции: турниры ---------- */
   function renderLeagues() {
     var box = $("#leagues");
@@ -738,6 +819,11 @@
     for (var k = 0; k < promos.length; k++) {
       if (!String(promos[k].title || "").trim()) return "У акции нет названия: заполните его или удалите акцию.";
     }
+    var afisha = s.afisha || [];
+    for (var a = 0; a < afisha.length; a++) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(afisha[a].date || "")) return "У события в афише не указана дата.";
+      if (!String(afisha[a].title || "").trim()) return "У события в афише нет названия.";
+    }
     for (var i = 0; i < state.menu.length; i++) {
       var sec = state.menu[i];
       if (!String(sec.category || "").trim()) return "У раздела меню нет названия.";
@@ -748,8 +834,16 @@
     return "";
   }
 
+  function afishaPhotos(site) {
+    return (site.afisha || []).map(function (ev) { return ev.photo; }).filter(Boolean);
+  }
+
   // лишние пробелы и пустые необязательные поля убираем прямо в данных
   function cleanMenu() {
+    (state.site.afisha || []).forEach(function (ev) {
+      ev.title = String(ev.title || "").trim();
+      if (ev.text != null) { ev.text = String(ev.text).trim(); if (!ev.text) delete ev.text; }
+    });
     state.menu.forEach(function (sec) {
       sec.category = String(sec.category || "").trim();
       sec.items.forEach(function (it) {
@@ -776,15 +870,17 @@
       files.push({ path: MENU_FILE, b64: toB64(heads.menu + "window.MENU = " + JSON.stringify(state.menu, null, 2) + ";\n") });
     }
     // новые фото зала и блюд, которые остались в данных и ещё не отправлены
-    var now = site.gallery.map(function (g) { return g.photo; }).concat(menuPhotos(state.menu));
+    var now = site.gallery.map(function (g) { return g.photo; }).concat(menuPhotos(state.menu), afishaPhotos(site));
     var listed = {};
     Object.keys(newPhotos).forEach(function (p) {
       if (now.indexOf(p) >= 0 && !newPhotos[p].sent && !listed[p]) { listed[p] = 1; files.push({ path: p, b64: newPhotos[p].b64 }); }
     });
-    // убранные фото удаляем из репозитория: фото зала и загруженные в админке фото блюд
+    // убранные фото удаляем из репозитория: фото зала и афиши, загруженные в админке фото блюд
     // (фото из Яндекс Еды убирает сам робот, когда на них больше ничего не ссылается)
-    JSON.parse(saved.site).gallery.map(function (g) { return g.photo; })
-      .filter(function (p) { return p.indexOf("images/gallery/") === 0; })
+    var was = JSON.parse(saved.site);
+    was.gallery.map(function (g) { return g.photo; })
+      .concat(afishaPhotos(was))
+      .filter(function (p) { return p.indexOf("images/gallery/") === 0 || p.indexOf("images/afisha/") === 0; })
       .concat(menuPhotos(JSON.parse(saved.menu)).filter(function (p) { return /^images\/menu\/(thumb\/)?u-/.test(p); }))
       .forEach(function (p) {
         if (now.indexOf(p) < 0 && !listed[p]) { listed[p] = 1; files.push({ path: p, b64: null }); }
@@ -828,6 +924,7 @@
     var menu = JSON.parse(JSON.stringify(state.menu));
     // новые фото ещё не на сайте: показываем их из памяти браузера
     (site.gallery || []).forEach(function (g) { g.photo = srcOf(g.photo); });
+    (site.afisha || []).forEach(function (ev) { if (ev.photo) ev.photo = srcOf(ev.photo); });
     menu.forEach(function (c) {
       (c.items || []).forEach(function (it) {
         if (it.photo) it.photo = srcOf(it.photo);
@@ -849,6 +946,7 @@
     $("#menu-sync").checked = state.site.menuSync !== false;
     renderNoticePreview();
     renderPromos();
+    renderAfisha();
     renderLeagues();
     renderMenu();
     renderPhotos();

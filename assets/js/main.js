@@ -129,6 +129,50 @@
   }
   setSrc($("#broadcast-photo"), bc.photo);
 
+  /* ---------- Афиша (из админки): ближайшие события по дате, прошедшие скрываются сами ---------- */
+  var MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+  var WEEKDAYS = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
+  function moscowDate(shiftDays) {
+    var d = new Date(Date.now() + (shiftDays || 0) * 864e5);
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow" }).format(d); }
+    catch (e) { return new Date(d.getTime() + 3 * 36e5).toISOString().slice(0, 10); }
+  }
+  function eventDate(ev) {
+    var p = ev.date.split("-").map(Number);
+    var label = ev.date === moscowDate(0) ? "Сегодня"
+      : ev.date === moscowDate(1) ? "Завтра"
+      : p[2] + " " + MONTHS[p[1] - 1] + ", " + WEEKDAYS[new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay()];
+    return label + (ev.time ? " · " + ev.time : "");
+  }
+  var afisha = $("#afisha");
+  var today = moscowDate(0);
+  var upcoming = (S.afisha || [])
+    .filter(function (ev) { return ev.title && /^\d{4}-\d{2}-\d{2}$/.test(ev.date || "") && ev.date >= today; })
+    .sort(function (a, b) { return (a.date + (a.time || "")).localeCompare(b.date + (b.time || "")); });
+  if (afisha && upcoming.length) {
+    var evList = $("#afisha-list");
+    upcoming.forEach(function (ev) {
+      var li = el("li", "event");
+      if (ev.photo) {
+        var img = el("img", "event__photo");
+        img.alt = "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        fallbackImage(img, PLACEHOLDER);
+        img.src = ev.photo;
+        li.appendChild(img);
+      }
+      var body = el("div", "event__body");
+      body.appendChild(el("p", "event__date", eventDate(ev)));
+      body.appendChild(el("h3", "event__title", ev.title));
+      if (ev.text) body.appendChild(el("p", "event__text", ev.text));
+      li.appendChild(body);
+      evList.appendChild(li);
+    });
+    afisha.hidden = false;
+    $$('a[href="#afisha"]').forEach(function (a) { a.hidden = false; });
+  }
+
   /* ---------- Открыто / закрыто (московское время) ---------- */
   function toMin(hhmm) {
     var p = String(hhmm).split(":");

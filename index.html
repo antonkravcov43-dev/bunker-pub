@@ -25,7 +25,7 @@
   <link rel="preload" href="assets/fonts/tektur-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/plex-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <!-- ?v= — номер версии: при каждом обновлении стилей или скриптов его меняют, чтобы браузеры сразу взяли новые файлы -->
-  <link rel="stylesheet" href="assets/css/style.css?v=11">
+  <link rel="stylesheet" href="assets/css/style.css?v=12">
 
   <script type="application/ld+json">
   {
@@ -65,6 +65,7 @@
         <a href="https://eda.yandex.ru/r/bunkerpab" target="_blank" rel="noopener" data-link="delivery"
            aria-label="Заказ доставки в Яндекс Еде, откроется в новой вкладке">Заказ<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
         <a href="#promos">Акции</a>
+        <a href="#afisha" hidden>Афиша</a>
         <a href="#broadcast">Трансляции</a>
         <a href="#hall">Зал</a>
         <a href="#find">Как найти</a>
@@ -158,6 +159,13 @@
           <img id="broadcast-photo" src="images/broadcast.jpg" alt="Зал Бункер Паба с экраном для трансляций" loading="lazy"
                onerror="this.onerror=null;this.src='images/broadcast-placeholder.svg'">
         </div>
+      </div>
+
+      <!-- АФИША: ближайшие события из админки; прошедшие скрываются сами, пустая афиша не показывается -->
+      <div class="wrap afisha" id="afisha" hidden>
+        <h2 class="h2" id="afisha-title">Афиша</h2>
+        <ul class="events" id="afisha-list" aria-labelledby="afisha-title"></ul>
+        <button class="btn btn--red btn--big" type="button" data-book>Забронировать стол</button>
       </div>
     </section>
 
@@ -392,6 +400,6 @@
     })();
   </script>
   <script src="assets/js/vendor/qrcode.min.js"></script>
-  <script src="assets/js/main.js?v=9"></script>
+  <script src="assets/js/main.js?v=10"></script>
 </body>
 </html>
