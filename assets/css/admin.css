@@ -34,7 +34,7 @@
 .adm-bar__link:hover { color: var(--white); }
 
 .adm-main {
-  max-width: 760px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 24px 16px 140px;
 }
@@ -76,6 +76,15 @@
 .adm-tabs::-webkit-scrollbar { display: none; }
 .adm-tabs .cat-btn { padding: 0 12px; }
 .adm-tabs .cat-btn::after { left: 12px; right: 12px; }
+/* на компьютере и планшете все вкладки видны сразу: что не влезло — второй строкой */
+@media (min-width: 600px) {
+  .adm-tabs { flex-wrap: wrap; overflow: visible; }
+}
+/* на телефоне вкладки листаются пальцем; затухание у края показывает, что дальше есть ещё */
+.adm-tabs.has-more {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+}
 
 /* поля */
 .fld {

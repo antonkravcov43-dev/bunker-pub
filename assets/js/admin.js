@@ -190,10 +190,18 @@
   });
 
   /* ---------- вкладки ---------- */
+  var tabsBar = $(".adm-tabs");
+  function tabsFade() {
+    tabsBar.classList.toggle("has-more", tabsBar.scrollLeft + tabsBar.clientWidth < tabsBar.scrollWidth - 4);
+  }
+  tabsBar.addEventListener("scroll", tabsFade, { passive: true });
+  window.addEventListener("resize", tabsFade);
   $$("[data-tab]").forEach(function (tab) {
     tab.addEventListener("click", function () {
       $$("[data-tab]").forEach(function (t) { t.classList.toggle("is-active", t === tab); });
       $$("[data-panel]").forEach(function (p) { p.hidden = p.getAttribute("data-panel") !== tab.getAttribute("data-tab"); });
+      // на телефоне выбранная вкладка доезжает в видимую часть полосы
+      tabsBar.scrollTo({ left: Math.max(0, tab.offsetLeft - (tabsBar.clientWidth - tab.offsetWidth) / 2), behavior: "smooth" });
       window.scrollTo(0, 0);
     });
   });
@@ -845,6 +853,7 @@
     renderMenu();
     renderPhotos();
     changed();
+    tabsFade();
   }
 
   if (token) start(); else showLogin();
