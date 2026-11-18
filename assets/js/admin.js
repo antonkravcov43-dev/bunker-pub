@@ -583,7 +583,7 @@
     box.appendChild(field("Название", nameInput));
     box.appendChild(el("div", { class: "row2" }, [field("Вес или объём", weight), field("Цена, ₽", price)]));
     box.appendChild(field("Описание (необязательно)", el("textarea", { class: "inp", rows: "2", maxlength: "200", text: it.note || "",
-      placeholder: "Коротко и по делу: например, «30 см» или «на компанию из 4 человек»",
+      placeholder: "Коротко и по делу: например, «30 см», «крепость 4,7%» или «на компанию из 4 человек»",
       oninput: function (e) { it.note = e.target.value; touch(); } })));
     box.appendChild(el("div", { class: "fld" }, [el("span", { text: "Отметка на карточке" }), seg]));
     box.appendChild(field("Раздел", sel));

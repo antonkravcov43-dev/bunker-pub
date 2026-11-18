@@ -925,6 +925,15 @@ a { color: inherit; }
   border-bottom: 1px solid var(--steel);
 }
 .row__name { font-size: 18px; font-weight: 500; line-height: 1.35; }
+/* описание у позиции без фото — строкой под названием */
+.row__note {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--dust);
+}
 .row__weight { font-size: 15px; color: var(--dust); white-space: nowrap; }
 .row__price {
   min-width: 4.5ch;

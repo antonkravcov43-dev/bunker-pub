@@ -290,6 +290,7 @@
         var li = el("li", "row");
         var name = el("span", "row__name", it.name);
         if (it.badge) name.appendChild(el("span", "row__badge", it.badge));
+        if (it.note) name.appendChild(el("span", "row__note", it.note));
         li.appendChild(name);
         li.appendChild(el("span", "row__weight", it.weight || ""));
         li.appendChild(el("span", "row__price", price(it.price)));
@@ -432,6 +433,7 @@
     vImg.src = it.photo;
     vImg.alt = title;
     vName.textContent = title;
+    if (it.badge) vName.appendChild(el("span", "row__badge", it.badge));
     vWeight.textContent = it.weight || "";
     vPrice.textContent = price(it.price);
     vNote.textContent = it.note || "";
