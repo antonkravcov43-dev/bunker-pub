@@ -651,7 +651,9 @@ window.MENU = [
         "price": 580,
         "photo": "images/menu/shtrudel.jpg",
         "eda": 3016312503,
-        "thumb": "images/menu/thumb/shtrudel.jpg"
+        "thumb": "images/menu/thumb/shtrudel.jpg",
+        "hidden": true,
+        "gone": true
       },
       {
         "name": "Чизкейк классический",
